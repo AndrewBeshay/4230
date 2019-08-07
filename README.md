@@ -29,3 +29,7 @@ decorating pattern from the camera view.
 
 * Pick and place the correct cake decorations as specified. Decorations in the form of Qwirkle blocks will
 be fed from the conveyor 
+
+#### Peripherals and Safety
+
+* Control conveyor and vacuum pump, make sure the robot handles any error cases
