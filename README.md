@@ -1,5 +1,4 @@
-# 4230 Project
-
+Project
 
 ### Programmer (GUI and Network): 
 
