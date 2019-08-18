@@ -1,10 +1,12 @@
-function coordinates = Main4_MatchBlocks(blockProps, patternShapeProps)
+function coordinates = Main4_MatchBlocks(shapeProps, patternProps)
 
-desiredIdx = find(patternShapeProps(:,1) == blockProps(1) & patternShapeProps(:,2) == blockProps(2));
-if length(desiredIdx) > 1
-    coordinates = patternShapeProps(desiredIdx, 3:6);
+desiredIdx = find(patternProps.Colour == shapeProps.Colour & patternProps.Shape == shapeProps.Shape);
+if length(desiredIdx) > 0
+    coordinates.Centroid = patternProps.Centroid(desiredIdx, :);
+    coordinates.Orientation = patternProps.Orientation(desiredIdx);
 else
-    coordinates = [];
+    coordinates.Centroid = [];
+    coordinates.Orientation = [];
 end
 
 end

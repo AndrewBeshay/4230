@@ -1,6 +1,6 @@
 function centroids = Main1_DetectBlocksOnConveyor()
     % Detect on the Conveyer to see if blocks exist, return the centroids
-    clear all; clc;
+    clc;
     
     CameraCalibrationConveyor;
     conveyorImg = imread('Proper_Pics\conveyor_AllShapes2.jpg');

@@ -145,6 +145,10 @@ end
 transferCentroid = tablePxlToReal(s.Centroid(1), s.Centroid(2));
 transferOrientation = blockAngle;
 
-shapeProps = [blockColour blockShape transferCentroid transferOrientation];
+shapeProps.Colour = blockColour;
+shapeProps.Shape = blockShape;
+shapeProps.Centroid = transferCentroid;
+shapeProps.Orientation = transferOrientation;
+% shapeProps = [blockColour blockShape transferCentroid transferOrientation];
 
 end
