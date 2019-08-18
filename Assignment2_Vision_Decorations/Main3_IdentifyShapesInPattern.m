@@ -8,7 +8,7 @@ yellow = 1.4;
 CameraCalibration;
 
 %% Identify shapes and colour of the pattern
-table_Img = imread('Proper_Pics\AllShapes\Red_AllShapes.jpg');
+table_Img = imread('Proper_Pics\Patterns\Pattern9.jpg');
 table_Img = undistortImage(table_Img, cameraParams);
 table_Img = segmentSection(table_Img, 552, 1043, 288, 782);
 figure; imshow(table_Img);
@@ -19,10 +19,12 @@ table_ImgBW = removeLettersAndNumbers(table_ImgBW);
 table_ImgBW = bwareaopen(table_ImgBW,100);
 figure; imshow(table_ImgBW);
 
+%{
 patternProps.Colour = [];
 patternProps.Shape = [];
 patternProps.Centroid = [];
 patternProps.Orientation = [];
+%}
 
 %% Filter all colours
 % red
@@ -43,14 +45,14 @@ figure; imshow(myPatternGreen);
 figure; imshow(myPatternGreenBW);
 
 % Blue
-[myPatternBlueBW,myPatternBlue] = createPatternBlueMask(table_Img);
+[myPatternBlueBW,myPatternBlue] = createPatternBlueMask3(table_Img);
 myPatternBlueBW = bwareaopen(myPatternBlueBW,200);
 figure; imshow(myPatternBlue);
 figure; imshow(myPatternBlueBW);
 
 % Yellow
-[myPatternYellowBW,myPatternYellow] = createPatternYellowMask(table_Img);
-myPatternYellowBW = bwareaopen(myPatternYellowBW,200);
+[myPatternYellowBW,myPatternYellow] = createPatternYellowMask3(table_Img);
+myPatternYellowBW = bwareaopen(myPatternYellowBW,350);
 figure; imshow(myPatternYellow);
 figure; imshow(myPatternYellowBW);
 
@@ -131,18 +133,19 @@ patternProps.Centroid = [redCentroidWorld; greenCentroidWorld; blueCentroidWorld
 patternProps.Orientation = [redOrientation; greenOrientation; blueOrientation; yellowOrientation];
 %}
 
-shapesAndProperties = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientation;...
+patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientation;...
     ones(size(greenShape, 1), 1)*green greenShape greenCentroid greenOrientation;...
     ones(size(blueShape, 1), 1)*blue blueShape blueCentroid blueOrientation;...
-    ones(size(yellowShape, 1), 1)*yellow yellowShape yellowCentroid yellowOrientation]
+    ones(size(yellowShape, 1), 1)*yellow yellowShape yellowCentroid yellowOrientation];
 %}
 
 %{
 %% For testing puspose, copy to the command prompt after you run this code
-table_Img = imread('Proper_Pics\AllShapes\Red_AllShapes.jpg');
+patternProps = ans;
+table_Img = imread('Proper_Pics\AllShapes\Green_AllShapes.jpg');
 figure; imshow(table_Img); hold on; 
-for n = 1:size(shapesAndProperties,1)
-    plot(shapesAndProperties(n,3), shapesAndProperties(n,4), 'c*', 'MarkerSize', 8);
+for n = 1:size(patternProps,1)
+    plot(patternProps(n,3), patternProps(n,4), 'c*', 'MarkerSize', 8);
     pause;
 end
 %}

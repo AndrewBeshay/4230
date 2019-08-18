@@ -43,7 +43,7 @@ function [Shape, Centroid, Orientation] = identifyAllShapes(myPatternBW, ...
             
         else 
             % 4 star or 6 star
-            if s.MajorAxisLength > 34.5
+            if s.MajorAxisLength > 34.2
                 Shape = [Shape; star4];
             else
                 Shape = [Shape; star6];
