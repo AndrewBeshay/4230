@@ -29,11 +29,12 @@ function [Shape, Centroid, Orientation] = identifyAllShapes(myPatternBW, ...
             if s.Perimeter > 150
                 Shape = [Shape; flower];
             else 
+                shapeBW = rotateToOriginal(shapeBW, blockBW);
+                seSquare = strel('Square', 25);
+                shapeBW2 = imopen(shapeBW, seSquare);
+                a = find(shapeBW2);
                 
-                shpAngle = calculateAngle(shapeBW);
-                blockAngle = calculateAngle(blockBW);
-                
-                if abs(shpAngle - blockAngle) < 10
+                if length(a) > 0
                     Shape = [Shape; square];
                 else 
                     Shape = [Shape; diamond];

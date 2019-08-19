@@ -8,7 +8,7 @@ yellow = 1.4;
 CameraCalibration;
 
 %% Identify shapes and colour of the pattern
-table_Img = imread('Proper_Pics\Patterns\Pattern10.jpg');
+table_Img = imread('Proper_Pics\Patterns\Pattern24.jpg');
 table_Img = undistortImage(table_Img, cameraParams);
 table_Img = segmentSection(table_Img, 552, 1043, 288, 782);
 figure; imshow(table_Img);
@@ -142,8 +142,7 @@ patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientati
 %{
 %% For testing puspose, copy to the command prompt after you run this code
 patternProps = ans;
-table_Img = imread('Proper_Pics\AllShapes\Green_AllShapes.jpg');
-figure; imshow(table_Img); hold on; 
+table_Img = imread('Proper_Pics\Patterns\Pattern1.jpg');figure; imshow(table_Img); hold on; 
 for n = 1:size(patternProps,1)
     plot(patternProps(n,3), patternProps(n,4), 'c*', 'MarkerSize', 8);
     pause;
