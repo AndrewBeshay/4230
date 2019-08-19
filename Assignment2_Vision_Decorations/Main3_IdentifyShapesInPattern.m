@@ -8,7 +8,7 @@ yellow = 1.4;
 CameraCalibration;
 
 %% Identify shapes and colour of the pattern
-table_Img = imread('Proper_Pics\Patterns\Pattern24.jpg');
+table_Img = imread('Proper_Pics\Patterns\Pattern1.jpg');
 table_Img = undistortImage(table_Img, cameraParams);
 table_Img = segmentSection(table_Img, 552, 1043, 288, 782);
 figure; imshow(table_Img);
@@ -19,7 +19,7 @@ table_ImgBW = removeLettersAndNumbers(table_ImgBW);
 table_ImgBW = bwareaopen(table_ImgBW,100);
 figure; imshow(table_ImgBW);
 
-%{
+
 patternProps.Colour = [];
 patternProps.Shape = [];
 patternProps.Centroid = [];
@@ -125,14 +125,16 @@ else
     yellowOrientation = [];
     yellowCentroidWorld = [];
 end
-%{
+
+
 patternProps.Colour = [ones(size(redShape, 1), 1)*red; ones(size(greenShape, 1), 1)*green;...
-    ones(size(blueShape, 1), 1)*blue; ones(size(yellowShape, 1), 1)*yellow];
+                        ones(size(blueShape, 1), 1)*blue; ones(size(yellowShape, 1), 1)*yellow];
 patternProps.Shape = [redShape; greenShape; blueShape; yellowShape];
 patternProps.Centroid = [redCentroidWorld; greenCentroidWorld; blueCentroidWorld; yellowCentroidWorld];
 patternProps.Orientation = [redOrientation; greenOrientation; blueOrientation; yellowOrientation];
 %}
 
+%{
 patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientation;...
     ones(size(greenShape, 1), 1)*green greenShape greenCentroid greenOrientation;...
     ones(size(blueShape, 1), 1)*blue blueShape blueCentroid blueOrientation;...
