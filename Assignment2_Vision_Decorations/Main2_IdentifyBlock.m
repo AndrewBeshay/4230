@@ -40,15 +40,20 @@ recognise = 0;
 
 CameraCalibration;
 
-transfer_Img = imread('Proper_Pics\Shapes\blueSquare.jpg');
+% Undistort and segment
+transfer_Img = imread('Proper_Pics\Shapes\grn4star.jpg');
 transfer_Img = undistortImage(transfer_Img, cameraParams);
 transfer_Img = segmentSection(transfer_Img, 1238, size(transfer_Img,2), 290, 783);
+figure; imshow(transfer_Img);
+
+% Get black and white version of the image
 transfer_ImgBW = im2bw(transfer_Img);
 transfer_ImgBW = ~transfer_ImgBW;
 transfer_ImgBW = segmentSection(transfer_ImgBW, 1238, size(transfer_Img,2), 290, 783);
 transfer_ImgBW = bwareaopen(transfer_ImgBW,400); 
-figure; imshow(transfer_Img);
+figure; imshow(transfer_ImgBW);
 
+% Colour masking
 [myRedShpBW,myRedShp] = createTableRedMask(transfer_Img);
 [myGreenShpBW,myGreenShp] = createTableGreenMask(transfer_Img);
 [myBlueShpBW,myBlueShp] = createTableBlueMask(transfer_Img);
@@ -102,10 +107,16 @@ elseif length(yellowExist) > 50
     myFinalShp = myYellowShp; 
     recognise = 1;
     
-else 
-    display("The shape is unrecognisable"); 
+else
+    % Unrecognisable shape
+    %display("The shape and colour are unrecognisable");
+    shapeProps.Colour = [];
+    shapeProps.Shape = [];
 end
 
+%figure; imshow(myShpBW);
+%figure; imshow(myFinalShp);
+    
 if recognise == 1
     % Determine the shape property
     s = regionprops(myShpBW, 'Area', 'MajorAxisLength', 'MinorAxisLength',...
@@ -159,12 +170,21 @@ if recognise == 1
     shapeProps.Shape = blockShape;
     shapeProps.Centroid = transferCentroid;
     shapeProps.Orientation = transferOrientation;
+    
     % shapeProps = [blockColour blockShape transferCentroid transferOrientation];
 else 
-    shapeProps.Colour = [];
-    shapeProps.Shape = [];
-    shapeProps.Centroid = [];
-    shapeProps.Orientation = [];
+    % see if there are any blocks at all
+    s = regionprops(transfer_ImgBW, 'Centroid');
+    centroid = vertcat(s.Centroid);
+    if size(centroid, 1) > 0
+        % block does exist
+        shapeProps.Centroid = tablePxlToReal(s.Centroid(1), s.Centroid(2));
+        shapeProps.Orientation = calculateAngle(transfer_ImgBW);
+    else
+        % transfer section is empty
+        %display("The transfer section is empty");
+        shapeProps.Centroid = [];
+        shapeProps.Orientation = [];
 end
 
 end

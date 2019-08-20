@@ -1,4 +1,4 @@
-function conveyorCentroids = Main1_DetectBlocksOnConveyor()
+function conveyorList = Main1_DetectBlocksOnConveyor()
     % Detect on the Conveyer to see if blocks exist, return the centroids
     clc;
     
@@ -22,14 +22,14 @@ function conveyorCentroids = Main1_DetectBlocksOnConveyor()
         areas(removeIdx) = [];
         centroids(removeIdx,:) = [];
         % convert to real life
-        conveyorCentroids = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
+        conveyorList = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
 
         figure();
         imshow(BW); hold on;
         plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
     else
         display("No blocks detected on the conveyor");
-        conveyorCentroids = [];
+        conveyorList = [];
     end
     
     
