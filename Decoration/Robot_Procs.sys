@@ -1,0 +1,89 @@
+MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
+    PROC moveToCali()
+        MoveAbsJ jtCali,v400,fine,tool0;
+    ENDPROC
+
+    PROC moveToHome()
+        MoveAbsJ jtHome,v400,fine,tool0;
+    ENDPROC
+    
+    PROC moveToConvWait()
+        MoveAbsJ jtConvWait,v400,fine,tool0;
+    ENDPROC
+    
+    PROC pick(robtarget t)
+        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;
+        WaitTime \InPos, 0;
+        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
+        vacuumOn;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
+    ENDPROC
+    
+    PROC place(robtarget t)
+        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;! \TLoad:=loChoc;
+        WaitTime \InPos, 0;
+        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;!\TLoad:=loChoc;
+        vacuumOff;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;!\TLoad:=loChoc;
+    ENDPROC
+    
+    PROC Conv2Table(Block b)
+        target:=[[b.x, b.y, b.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;
+        pick(target);
+        MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;! \TLoad:=loChoc;
+        place(lookSpot);
+        moveToConvWait;
+        WaitTime 3;
+    ENDPROC
+    
+    PROC Table2Cake(Block b)
+        target:=[[b.x, b.y, b.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        pick(lookSpot);
+        place(target);
+        moveToConvWait;
+        WaitTime 3;
+    ENDPROC
+    
+    PROC goToTrash()
+        pick(lookSpot);
+        MoveJ trash, v100, fine, tSCup;
+        vacuumOff;
+        moveToHome;
+    ENDPROC
+    
+    !RECEIVING FROM MATLAB
+    FUNC Block getConvBlocks()
+        VAR Block newBlock;
+        newBlock.x := 0;
+        newBlock.y := 409;
+        newBlock.z := 22.1;
+        newBlock.r := 0;    !always 0 in this part
+        newBlock.arrayLength := 1;
+        newBlock.arrayNum := 1;
+        waittime 1;
+        RETURN newBlock;
+    ENDFUNC
+    
+    FUNC Block getCakeBlock()
+        VAR Block newBlock;
+        newBlock.x := 175;
+        newBlock.y := -100;
+        newBlock.z := 147;
+        newBlock.r := 0;
+        newBlock.arrayLength := 0;
+        newBlock.arrayNum := 1;
+        waittime 1;
+        RETURN newBlock;
+    ENDFUNC
+    
+    !SENDING TO PERIPHERALS
+    PROC vacuumOn()
+        WaitTime 1;
+    ENDPROC
+    
+    PROC vacuumOff()
+        WaitTime 1;
+    ENDPROC
+    
+ENDMODULE
