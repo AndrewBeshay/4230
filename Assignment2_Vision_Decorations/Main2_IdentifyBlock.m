@@ -40,7 +40,7 @@ recognise = 0;
 
 CameraCalibration;
 
-transfer_Img = imread('Proper_Pics\Shapes\redSquare.jpg');
+transfer_Img = imread('Proper_Pics\Shapes\blueSquare.jpg');
 transfer_Img = undistortImage(transfer_Img, cameraParams);
 transfer_Img = segmentSection(transfer_Img, 1238, size(transfer_Img,2), 290, 783);
 transfer_ImgBW = im2bw(transfer_Img);
