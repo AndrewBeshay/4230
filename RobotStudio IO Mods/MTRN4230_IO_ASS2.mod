@@ -1,25 +1,29 @@
 MODULE MTRN4230_IO_ASS2
     ! Process Variables
     VAR intnum ProcessStage := 0;
-    CONST intnum InkDetect := 0;
+    VAR intnum HaltProcess := 0;    ! When halted Store Current Process
+    CONST intnum RobotIdle := 0;
     CONST intnum InkPrint := 1;
-    CONST intnum BlockDetect := 2;
-    CONST intnum BlockMove := 3;
+    CONST intnum BlockMove := 2;
+    CONST intnum Halt := 5;
+    
+    ! Persistant variables from server side variables
     
     ! IO Initialisation Variables and Conveyor Variables
     VAR bool Init := false;
-    CONST intnum ToTable := 0;
-    CONST intnum ToDropOff := 1;
+    CONST intnum ToTable := 1;
+    CONST intnum ToDropOff := 0;
     VAR intnum OpenConv;
     
     PROC MAIN()
         IF (Init = false) THEN
             InitialiseIOs;
             Init := true;
+            WaitTime 3;
+            MoveConvLength;
+            WaitTime 3;
         ENDIF
-        WaitTime 3;
-        ChocolateBlockInPlace;
-        WaitTime 3;
+
     ENDPROC
     
     PROC InkBlockage()
@@ -72,11 +76,19 @@ MODULE MTRN4230_IO_ASS2
         SetDO DO10_3, 1;
     ENDPROC
     
-    PROC ChocolateBlockInPlace()
+    PROC MoveConvLength()
         ConveyorMove ToTable;
         ! Need To test this time in lab
         ! Ask if want to move conveyor camera width?
-        WaitTime 3;
+        WaitTime 10;
+        ConveyorStop;
+    ENDPROC
+
+    PROC MoveCameraLength()
+        ConveyorMove ToTable;
+        ! Need To test this time in lab
+        ! Ask if want to move conveyor camera width?
+        WaitTime 2;
         ConveyorStop;
     ENDPROC
     
