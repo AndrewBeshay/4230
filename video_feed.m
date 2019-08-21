@@ -1,4 +1,4 @@
-function video_feed()
+function video_feed(app)
     
     warning('off', 'images:initSize:adjustingMag');
 
@@ -7,7 +7,7 @@ function video_feed()
     TabCam = videoinput('winvideo', 1, 'MJPG_1600x1200');
     TabCamRes = TabCam.VideoResolution;
     TabCamBands = TabCam.NumberOfBands;
-    TabCamImg = imshow(zeros([TabCamRes(2), TabCamRes(1), TabCamBands]), 'Parent', "?");
+    TabCamImg = imshow(zeros([TabCamRes(2), TabCamRes(1), TabCamBands]), 'Parent', app.TableCamera);
     TabCamPrev = preview(TabCam,TabCamImg);
     src1 = getselectedsource(TabCam);
     src1.ExposureMode = 'manual';
@@ -22,7 +22,7 @@ function video_feed()
     ConvCam = videoinput('winvideo', 2, 'MJPG_1600x1200');
     ConvCamRes = ConvCam.VideoResolution;
     ConvCamBands = ConvCam.NumberOfBands;
-    ConvCamImg = imshow(zeros([ConvCamRes(2), ConvCamRes(1), ConvCamBands]), 'Parent', axe2);
+    ConvCamImg = imshow(zeros([ConvCamRes(2), ConvCamRes(1), ConvCamBands]), 'Parent', app.ConveyorCamera);
     prev2 = preview(ConvCam,ConvCamImg);
     src2 = getselectedsource(ConvCam);
     src2.ExposureMode = 'manual';    
