@@ -1,26 +1,28 @@
 MODULE Robot_Data(SYSMODULE,NOSTEPIN,READONLY)
     RECORD Block
-        num x;
-        num y;
-        num z;
-        num r;              !always 0 when at conveyer
-        num arrayNum;       !block number in array, <= arrayLength, array begins at 1
-        num arrayLength;    !1 if just a single block
+        pos p;
+        num r;
+    ENDRECORD
+    
+    RECORD StartEnd
+        Block start;
+        Block end;
     ENDRECORD
     
     CONST jointtarget jtCali:=[[0,0,0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST jointtarget jtHome:=[[-90,0,0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    CONST jointtarget jtConvWait:=[[90,0,0,0,90,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST jointtarget jtConv:=[[90,0,0,0,90,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     
     CONST robtarget tableT1:=[[175,0,147],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget tableT2:=[[175,-520,147],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget tableT3:=[[175,520,147],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget tableT4:=[[548.6,0,147],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     
-    CONST robtarget convHome:=[[0,409,22],[0,-0.7071068,0.7071068,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget convHome:=[[0,409,175],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget waitTarget:=[[548.6,0,257],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget lookSpot:=[[370,325,147],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    CONST robtarget conv2tableDodge:= [[100,409,157],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    CONST robtarget trash:=[[0,-409,200],[0,-0.7071068,0.7071068,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget conv2tableDodge:= [[100,409,175],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget trash:=[[0,-409,200],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     
     PERS tooldata tSCup:=[TRUE,[[0,0,65],[1,0,0,0]],[0.5,[0,0,20],[1,0,0,0],0,0,0]];
     PERS loaddata loChoc:=[0.035,[0,0,3],[1,0,0,0],0,0,0];

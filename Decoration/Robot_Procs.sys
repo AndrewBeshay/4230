@@ -7,41 +7,47 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         MoveAbsJ jtHome,v400,fine,tool0;
     ENDPROC
     
-    PROC moveToConvWait()
-        MoveAbsJ jtConvWait,v400,fine,tool0;
+    PROC moveToConv()
+        MoveAbsJ jtConv,v400,fine,tool0;
+    ENDPROC
+    
+    PROC goWait()
+        MoveJ waitTarget, v400, fine, tSCup;
     ENDPROC
     
     PROC pick(robtarget t)
-        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;
+        MoveJ Offs(t, 0, 0, 100), v200, fine, tSCup;
         WaitTime \InPos, 0;
         MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
         vacuumOn;
-        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
+        GripLoad loChoc;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;!\TLoad:=loChoc;
     ENDPROC
     
     PROC place(robtarget t)
         MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;! \TLoad:=loChoc;
         WaitTime \InPos, 0;
-        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;!\TLoad:=loChoc;
+        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;! \TLoad:=loChoc;
         vacuumOff;
-        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;!\TLoad:=loChoc;
+        !GripLoad load0;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
     ENDPROC
     
     PROC Conv2Table(Block b)
-        target:=[[b.x, b.y, b.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-        MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;
+        target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        MoveJ Offs(conv2tableDodge, 0, 0, 0), v400, fine, tSCup;
         pick(target);
         MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;! \TLoad:=loChoc;
         place(lookSpot);
-        moveToConvWait;
+        goWait;
         WaitTime 3;
     ENDPROC
     
     PROC Table2Cake(Block b)
-        target:=[[b.x, b.y, b.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0]*OrientZYX(b.r,0,0),[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
         pick(lookSpot);
         place(target);
-        moveToConvWait;
+        goWait;
         WaitTime 3;
     ENDPROC
     
@@ -49,33 +55,43 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         pick(lookSpot);
         MoveJ trash, v100, fine, tSCup;
         vacuumOff;
-        moveToHome;
+        goWait;
     ENDPROC
     
     !RECEIVING FROM MATLAB
     FUNC Block getConvBlocks()
         VAR Block newBlock;
-        newBlock.x := 0;
-        newBlock.y := 409;
-        newBlock.z := 22.1;
-        newBlock.r := 0;    !always 0 in this part
-        newBlock.arrayLength := 1;
-        newBlock.arrayNum := 1;
+        WHILE mlBlocks <> "21" DO
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ENDWHILE
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ok := StrToVal(mlBlocks, newBlock.p);
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ok := StrToVal(mlBlocks, newBlock.r);   !always 0 in this part
         waittime 1;
         RETURN newBlock;
     ENDFUNC
     
     FUNC Block getCakeBlock()
         VAR Block newBlock;
-        newBlock.x := 175;
-        newBlock.y := -100;
-        newBlock.z := 147;
-        newBlock.r := 0;
-        newBlock.arrayLength := 0;
-        newBlock.arrayNum := 1;
+        WHILE mlBlocks <> "22" DO
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ENDWHILE
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ok := StrToVal(mlBlocks, newBlock.p);
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ok := StrToVal(mlBlocks, newBlock.r);
         waittime 1;
         RETURN newBlock;
     ENDFUNC
+    
+    !SENDING TO MATLAB
+    PROC sendBlocks2MatLab()
+        Write mlSend, "2 "\Pos:=convBlock.p \NoNewLine;
+        Write mlSend, " "\Num:=convBlock.r \NoNewLine;
+        Write mlSend, " "\Pos:=cakeBlock.p \NoNewLine;
+        Write mlSend, " "\Num:=cakeBlock.r \NoNewLine;
+    ENDPROC
     
     !SENDING TO PERIPHERALS
     PROC vacuumOn()
