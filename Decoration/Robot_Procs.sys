@@ -19,17 +19,19 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         MoveJ Offs(t, 0, 0, 100), v200, fine, tSCup;
         WaitTime \InPos, 0;
         MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
-        vacuumOn;
+        SuctionOn;
+        WaitTime 0.5;
         GripLoad loChoc;
-        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;!\TLoad:=loChoc;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
     ENDPROC
     
     PROC place(robtarget t)
-        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;! \TLoad:=loChoc;
+        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;
         WaitTime \InPos, 0;
-        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;! \TLoad:=loChoc;
-        vacuumOff;
-        !GripLoad load0;
+        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
+        SuctionOff;
+        WaitTime 0.3;
+        GripLoad load0;
         MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
     ENDPROC
     
@@ -50,16 +52,17 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     PROC goToTrash()
         pick(lookSpot);
         MoveJ trash, v100, fine, tSCup;
-        vacuumOff;
+        SuctionOff;
+        GripLoad load0;
     ENDPROC
     
     !RECEIVING FROM MATLAB
     FUNC Block getConvBlocks()
         VAR Block newBlock;
         mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ok := StrToVal(mlBlocks, newBlock.p);
+        posValid := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ok := StrToVal(mlBlocks, newBlock.r);   !always 0 in this part
+        oriValid := StrToVal(mlBlocks, newBlock.r);   !always 0 in this part
         waittime 1;
         RETURN newBlock;
     ENDFUNC
@@ -67,9 +70,9 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     FUNC Block getCakeBlock()
         VAR Block newBlock;
         mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ok := StrToVal(mlBlocks, newBlock.p);
+        posValid := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ok := StrToVal(mlBlocks, newBlock.r);
+        oriValid := StrToVal(mlBlocks, newBlock.r);
         waittime 1;
         RETURN newBlock;
     ENDFUNC
@@ -82,7 +85,7 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     
     !SENDING TO MATLAB
     PROC sendBlocks2MatLab()
-        Write mlSend, "rDeco "\Pos:=convBlock.p \NoNewLine;
+        Write mlSend, ""\Pos:=convBlock.p \NoNewLine;
         Write mlSend, " "\Num:=convBlock.r \NoNewLine;
         Write mlSend, " "\Pos:=cakeBlock.p \NoNewLine;
         Write mlSend, " "\Num:=cakeBlock.r;
@@ -90,19 +93,14 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     
     PROC sendError(num er)
         IF er = 1 THEN
-            Write mlSend, "rDeco atConv"\Pos:=convBlock.p \NoNewLine;
+            Write mlSend, "ERROR:Waiting_at_Conveyor";
         ELSEIF er = 2 THEN
-            Write mlSend, "rDeco atCake"\Pos:=convBlock.p \NoNewLine;
+            Write mlSend, "ERROR:Waiting_at_Cake";
+        ELSEIF er = 3 THEN
+            Write mlSend, "ERROR:Values_unreadable";
+        ELSEIF er = 4 THEN
+            Write mlSend, "ERROR:Unknown";
         ENDIF
-    ENDPROC
-    
-    !SENDING TO PERIPHERALS
-    PROC vacuumOn()
-        WaitTime 1;
-    ENDPROC
-    
-    PROC vacuumOff()
-        WaitTime 1;
     ENDPROC
     
 ENDMODULE
