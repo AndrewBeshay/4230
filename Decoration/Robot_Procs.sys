@@ -39,31 +39,23 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         pick(target);
         MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;! \TLoad:=loChoc;
         place(lookSpot);
-        goWait;
-        WaitTime 3;
     ENDPROC
     
     PROC Table2Cake(Block b)
         target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0]*OrientZYX(b.r,0,0),[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
         pick(lookSpot);
         place(target);
-        goWait;
-        WaitTime 3;
     ENDPROC
     
     PROC goToTrash()
         pick(lookSpot);
         MoveJ trash, v100, fine, tSCup;
         vacuumOff;
-        goWait;
     ENDPROC
     
     !RECEIVING FROM MATLAB
     FUNC Block getConvBlocks()
         VAR Block newBlock;
-        WHILE mlBlocks <> "21" DO
-            mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ENDWHILE
         mlBlocks := ReadStr(mlStream \Delim:= " ");
         ok := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
@@ -74,9 +66,6 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     
     FUNC Block getCakeBlock()
         VAR Block newBlock;
-        WHILE mlBlocks <> "22" DO
-            mlBlocks := ReadStr(mlStream \Delim:= " ");
-        ENDWHILE
         mlBlocks := ReadStr(mlStream \Delim:= " ");
         ok := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
@@ -85,12 +74,26 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         RETURN newBlock;
     ENDFUNC
     
+    PROC messageWait()
+        WHILE mlBlocks <> "rDeco" DO
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ENDWHILE
+    ENDPROC
+    
     !SENDING TO MATLAB
     PROC sendBlocks2MatLab()
-        Write mlSend, "2 "\Pos:=convBlock.p \NoNewLine;
+        Write mlSend, "rDeco "\Pos:=convBlock.p \NoNewLine;
         Write mlSend, " "\Num:=convBlock.r \NoNewLine;
         Write mlSend, " "\Pos:=cakeBlock.p \NoNewLine;
-        Write mlSend, " "\Num:=cakeBlock.r \NoNewLine;
+        Write mlSend, " "\Num:=cakeBlock.r;
+    ENDPROC
+    
+    PROC sendError(num er)
+        IF er = 1 THEN
+            Write mlSend, "rDeco atConv"\Pos:=convBlock.p \NoNewLine;
+        ELSEIF er = 2 THEN
+            Write mlSend, "rDeco atCake"\Pos:=convBlock.p \NoNewLine;
+        ENDIF
     ENDPROC
     
     !SENDING TO PERIPHERALS

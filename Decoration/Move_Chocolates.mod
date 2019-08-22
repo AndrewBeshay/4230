@@ -10,18 +10,64 @@ MODULE Move_Chocolates
     PROC main()
         Open "HOME:/hello.txt", mlStream\Read;
         Open "HOME:/bye.txt", mlSend\Write;
-        goWait;
-        convBlock:=getConvBlocks();
-        Conv2Table convBlock;
-        cakeBlock:=getCakeBlock();
-        IF cakeBlock.p <> [0,0,0] THEN
-            Table2Cake cakeBlock;
+            
+        Cake_Wait:
+            moveToHome;
+            messageWait;
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+            IF mlBlocks = "close" THEN
+                GOTO Close_Shop;
+            ELSEIF mlBlocks <> "begin" THEN
+                GOTO Cake_Wait;
+            ENDIF
+        
+        Conveyer:
+            goWait;
+            messageWait;
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+            IF mlBlocks = "conv" THEN
+                convBlock:=getConvBlocks();
+                Conv2Table convBlock;
+            ELSEIF mlBlocks = "cake" THEN
+                sendError(1);
+                GOTO Conveyer;
+            ELSEIF mlBlocks = "complete" THEN
+                GOTO Cake_Wait;
+            ELSEIF mlBlocks = "close" THEN
+                GOTO Close_Shop;
+            ELSE
+                GOTO Conveyer;
+            ENDIF
+                
+        Looking:
+            goWait;
+            messageWait;
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+            IF mlBlocks = "cake" THEN
+                cakeBlock:=getCakeBlock();
+            ELSEIF mlBlocks = "conv" THEN
+                sendError(2);
+                GOTO Looking;
+            ELSE
+                GOTO Looking;
+            ENDIF
+            
+            
+        Placing:
+            IF cakeBlock.p = [0,0,0] THEN
+                GOTO Conveyer;
+            ELSEIF cakeBlock.p = [0,-409,200] THEN
+                goToTrash;
+            ELSE
+                Table2Cake cakeBlock;
+            ENDIF
             sendBlocks2MatLab;
-        ELSE 
-            goToTrash;
-        ENDIF
-        Close mlStream;
-        Close mlSend;
+            GOTO Conveyer;
+            
+        Close_Shop:
+            moveToHome;
+            Close mlStream;
+            Close mlSend;
     ENDPROC
     
 ENDMODULE
