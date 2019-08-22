@@ -23,7 +23,7 @@ function conveyorList = Main1_DetectBlocksOnConveyor()
         centroids(removeIdx,:) = [];
         % convert to real life
         conveyorList = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
-
+        conveyorList = [conveyorList 0];
         figure();
         imshow(BW); hold on;
         plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);

@@ -28,24 +28,26 @@ while(1)
     if size(shapeProps.Centroid,1) == 0
         % nothing on the table, do nothing
         display("Table is empty");
-        % send [0, 0, 0]
+        % send [0, 0, 0, 0]
+        % wait for response
     else
         
         if size(shapeProps.Shape,1) == 0
             % shape is unrecognisable
             display("The shape and colour is unrecognisable");
-            % move to bin, send [0, -409, 200]
+            % move to bin, send [0, -409, 200, 0]
+            % wait for response
         else 
             destCoordinates = Main4_MatchBlocks(shapeProps, patternProps);
             if size(destCoordinates, 1) > 0
                 % match found
                 % send destCoordinate(1,:)
                 % move pattern, wait for indication of completion
-                [patternProps] = Main6_RemoveFromPatternList(patternProps, destCoordinate(1,:));
+                [patternProps] = Main6_RemoveFromPatternList(patternProps, destCoordinates(1,:));
             else 
                 % match not found
-                % move to bin, send [0, -409, 200]
-                % move pattern, wait for indication of completion
+                % move to bin, send [0, -409, 200, 0]
+                % wait for response
             end
             
         end

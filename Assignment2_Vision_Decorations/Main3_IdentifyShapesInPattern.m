@@ -19,12 +19,11 @@ table_ImgBW = removeLettersAndNumbers(table_ImgBW);
 table_ImgBW = bwareaopen(table_ImgBW,100);
 figure; imshow(table_ImgBW);
 
-
 patternProps.Colour = [];
 patternProps.Shape = [];
 patternProps.Centroid = [];
 patternProps.Orientation = [];
-%}
+
 
 %% Filter all colours
 % red
@@ -118,7 +117,7 @@ else
     yellowCentroidWorld = [];
 end
 
-%{
+
 patternProps.Colour = [ones(size(redShape, 1), 1)*red; ones(size(greenShape, 1), 1)*green;...
                         ones(size(blueShape, 1), 1)*blue; ones(size(yellowShape, 1), 1)*yellow];
 patternProps.Shape = [redShape; greenShape; blueShape; yellowShape];
@@ -126,7 +125,7 @@ patternProps.Centroid = [redCentroidWorld; greenCentroidWorld; blueCentroidWorld
 patternProps.Orientation = [redOrientation; greenOrientation; blueOrientation; yellowOrientation];
 %}
 
-
+%{
 patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientation;...
     ones(size(greenShape, 1), 1)*green greenShape greenCentroid greenOrientation;...
     ones(size(blueShape, 1), 1)*blue blueShape blueCentroid blueOrientation;...
