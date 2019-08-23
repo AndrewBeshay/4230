@@ -2,9 +2,13 @@
 
 The complete front end - backend for the robot studio programmers as well as the image processing for MATLAB  
 
-## How to run  
+## How to run 
 
-Run the file `Start.mlapp`  
+Open RobotStudio and load all the `.mod` files  
+`T_COM` takes all communication/server related files  
+`T_ROB` takes all robot movement functions  
+
+Once the server is started run the file `Start.mlapp`  
 
 ## Network Protocol    
 
