@@ -1,34 +1,10 @@
-Project
+# GUI
 
-### Programmer (GUI and Network): 
+The complete front end - backend for the robot studio programmers as well as the image processing for MATLAB  
 
-* Provide a simple user interface for the user to start/stop and pause/resume the robot operations as well
-as show the status of the robot and task completion status 
-* Provide Matlab networking capability to relay plans from the result of image processing to the robot via
-Ethernet. 
+## How to run  
 
-### Computer Vision Engineer
+Run the file `Start.mlapp`  
 
-#### Ink Printing
+## Network Protocol  
 
-* Detect and plan the trajectory for the end effector to simulate printing with edible ink. 
-
-#### Decoration
-
-* Detect Qwirkle blocks are they are supplied using the conveyor and detect the customer’s desired
-decorating pattern from the camera view. 
-
-### Robot Programmer
-
-#### Ink Printing
-
-* Program the robot to follow the path marking the outline of the customer’s desired text. 
-
-#### Decoration 
-
-* Pick and place the correct cake decorations as specified. Decorations in the form of Qwirkle blocks will
-be fed from the conveyor 
-
-#### Peripherals and Safety
-
-* Control conveyor and vacuum pump, make sure the robot handles any error cases
