@@ -11,7 +11,17 @@ Open RobotStudio and load all the `.mod` files
 Once the server is started run the file `Start.mlapp`  
 
 ## Network Protocol    
+##### MATLAB -> RobotStudio  
+| Field | Field Name | Field Type | Description | Binary Bytes |
+|:-----:|:----------:|:----------:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+| 1 | Header | Char | "ML" | 2 |
+| 2 | Flag | Int | 0 = Normal Operation  1 = Toggle Peripheral   2 = Function Specific Data   3 = Special Operation Toggle   4 = Conveyor Request 5 = Dummy Error Trigger | 4 |
+| 3 | Status | Short | When Flag = 1  Status is 0-15 as a binary pattern (e,g 0010) | 1 |
+| 4 | Struct | String | When Flag = 2 Arrays of data in form of For Ink Printing X000.000Y000.000Z000.000HB100  For Cake Decoration X000.000Y000.000Z000.000A000.00 | 8-32 |
+| 5 | Flag | Bool | When Flag = 3 0 = Halt 1 = Shutdown | 1 |
+| 6 | Error | String | "Blocked Ink Ejector" | Max 75 |  
 
+##### RobotStudio -> MATLAB 
 | Field | Field Name | Field Type | Description | Binary Bytes |
 |:-----:|:----------:|:----------:|:-------------------------------------------------------------------------------------------------------------------:|:------------:|
 | 1 | Header | Char | "RS" | 2 |
