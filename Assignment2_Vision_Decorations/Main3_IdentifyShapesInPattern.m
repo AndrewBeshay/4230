@@ -8,7 +8,7 @@ yellow = 1.4;
 CameraCalibration;
 
 %% Identify shapes and colour of the pattern
-table_Img = imread('Proper_Pics\Patterns\Pattern12.jpg');
+table_Img = imread('Proper_Pics\MorePatterns\MorePattern8.jpg');
 table_Img = undistortImage(table_Img, cameraParams);
 table_Img = segmentSection(table_Img, 552, 1043, 288, 782);
 figure; imshow(table_Img);
@@ -19,11 +19,12 @@ table_ImgBW = removeLettersAndNumbers(table_ImgBW);
 table_ImgBW = bwareaopen(table_ImgBW,100);
 figure; imshow(table_ImgBW);
 
+
 patternProps.Colour = [];
 patternProps.Shape = [];
 patternProps.Centroid = [];
 patternProps.Orientation = [];
-
+%}
 
 %% Filter all colours
 % red
@@ -35,10 +36,10 @@ figure; imshow(myPatternRedBW);
 
 % green
 % green's bit more sensitive 
-[myPatternGreenBW,myPatternGreen] = createPatternGreenMask2(table_Img);
+[myPatternGreenBW,myPatternGreen] = createPatternGreenMask3(table_Img);
 myPatternGreenBW = bwareaopen(myPatternGreenBW,200);
 figure; imshow(myPatternGreen);
-figure; imshow(myPatternGreenBW);
+ figure; imshow(myPatternGreenBW);
 
 % Blue
 table_Img = imsharpen(table_Img, 'Radius', 5, 'Amount', 1.5);
@@ -61,11 +62,7 @@ yellowExists = find(myPatternYellowBW);
 
 % process red
 if length(redExists) > 50 
-    cicleAreaThreshold = 1150;
-    area2Threshold = 720;
-    
-    [redShape, redCentroid, redOrientation] = identifyAllRedShapes(myPatternRedBW, ...
-        table_ImgBW);
+    [redShape, redCentroid, redOrientation] = identifyAllRedShapes(myPatternRedBW, table_ImgBW);
     redCentroidWorld = tablePxlToReal(redCentroid(:,1), redCentroid(:,2));
 else 
     display("No red exists in the pattern");
@@ -77,7 +74,7 @@ end
 
 % process green
 if length(greenExists) > 50 
-    [greenShape, greenCentroid, greenOrientation] = identifyAllGreenShapes(myPatternGreenBW, table_ImgBW);
+    [greenShape, greenCentroid, greenOrientation] = identifyAllGreenShapes3(myPatternGreenBW, table_ImgBW);
     greenCentroidWorld = tablePxlToReal(greenCentroid(:,1), greenCentroid(:,2));
     
 else
@@ -90,9 +87,9 @@ end
 
 % process blue
 if length(blueExists) > 50 
-
     [blueShape, blueCentroid, blueOrientation] = identifyAllBlueShapes(myPatternBlueBW, table_ImgBW);
     blueCentroidWorld = tablePxlToReal(blueCentroid(:,1), blueCentroid(:,2));
+    
 else
     display("No blue exists in the pattern");
     blueShape = [];
@@ -135,10 +132,12 @@ patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientati
 %{
 %% For testing puspose, copy to the command prompt after you run this code
 patternProps = ans;
-table_Img = imread('Proper_Pics\Patterns\Pattern1.jpg');figure; imshow(table_Img); hold on; 
+table_Img = imread('Proper_Pics\MorePatterns\MorePattern6.jpg');
+figure; imshow(table_Img); hold on; 
 for n = 1:size(patternProps,1)
     plot(patternProps(n,3), patternProps(n,4), 'c*', 'MarkerSize', 8);
     pause;
 end
 %}
+
 end

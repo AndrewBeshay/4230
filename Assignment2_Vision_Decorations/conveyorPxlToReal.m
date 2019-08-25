@@ -14,7 +14,7 @@ Mx = (C2_world(1)-C3_world(1))/(C2_pxl(2) - C3_pxl(2));
 xReal = Mx*yPxl - Mx*C2_pxl(2) + C2_world(1);
 My = (C5_world(2)-C3_world(2))/(C5_pxl(1)-C3_pxl(1));
 yReal = My*xPxl - My*C3_pxl(1) + C3_world(2);
-display('This is the point you converted to the real world (conveyor): ');
+%display('This is the point you converted to the real world (conveyor): ');
 realPts = [xReal, yReal, ones(size(xReal,1),1)*22.1];
 
 end
