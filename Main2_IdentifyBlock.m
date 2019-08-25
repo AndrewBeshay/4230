@@ -41,7 +41,7 @@ recognise = 0;
 CameraCalibration;
 
 % Undistort and segment
-transfer_Img = imread('Proper_Pics\Shapes\grn4star.jpg');
+transfer_Img = imread('Proper_Pics\MorePatterns\MorePattern11.jpg');
 transfer_Img = undistortImage(transfer_Img, cameraParams);
 transfer_Img = segmentSection(transfer_Img, 1238, size(transfer_Img,2), 290, 783);
 figure; imshow(transfer_Img);
@@ -51,7 +51,8 @@ transfer_ImgBW = im2bw(transfer_Img);
 transfer_ImgBW = ~transfer_ImgBW;
 transfer_ImgBW = segmentSection(transfer_ImgBW, 1238, size(transfer_Img,2), 290, 783);
 transfer_ImgBW = bwareaopen(transfer_ImgBW,400); 
-figure; imshow(transfer_ImgBW);
+figure; imshow(transfer_ImgBW); 
+%hold on;
 
 % Colour masking
 [myRedShpBW,myRedShp] = createTableRedMask(transfer_Img);
@@ -73,7 +74,6 @@ yellowExist = find(myYellowShpBW);
 
 if length(redExist) > 50
     display("It's a red shape");
-    Colour = 'Red';
     blockColour = red;
     myShpGray = rgb2gray(myRedShp);
     myShpBW = myRedShpBW;
@@ -82,7 +82,6 @@ if length(redExist) > 50
     
 elseif length(greenExist) > 50
     display("It's a green shape");
-    Colour = 'Green';
     blockColour = green;
     myShpGray = rgb2gray(myGreenShp);
     myShpBW = myGreenShpBW;
@@ -91,7 +90,6 @@ elseif length(greenExist) > 50
 
 elseif length(blueExist) > 50
     display("It's a blue shape");
-    Colour = 'Blue';
     blockColour = blue;
     myShpGray = rgb2gray(myBlueShp);
     myShpBW = myBlueShpBW;
@@ -100,7 +98,6 @@ elseif length(blueExist) > 50
     
 elseif length(yellowExist) > 50
     display("It's a yellow shape");
-    Colour = 'Yellow';
     blockColour = yellow;
     myShpGray = rgb2gray(myYellowShp);
     myShpBW = myYellowShpBW;
@@ -132,46 +129,36 @@ if recognise == 1
     % Determine the shape
     if s.Area > 1200
         display("It's a circle");
-        Shape = 'Circle';
         blockShape = circle;
     elseif s.Area > 850
         if s.Perimeter > 150
             display("It's a flower");
-            Shape = 'Flower';
             blockShape = flower;
         else 
             if abs(shpAngle - blockAngle) < 10
                 display("It's a square");
-                Shape = 'Square';
                 blockShape = square;
             else 
                 display("It's a diamond");
-                Shape = 'Diamond';
                 blockShape = diamond;
             end
         end
     else 
         if s.MajorAxisLength > 34.5
             display("It's a 4star");
-            Shape = '4star';
             blockShape = star4;
         else 
             display("It's a 6star");
-            Shape = '6star';
             blockShape = star6;
         end
     end
 
     % record final properties
-    transferCentroid = tablePxlToReal(s.Centroid(1), s.Centroid(2));
-    transferOrientation = blockAngle;
-
     shapeProps.Colour = blockColour;
     shapeProps.Shape = blockShape;
-    shapeProps.Centroid = transferCentroid;
-    shapeProps.Orientation = transferOrientation;
+    shapeProps.Centroid = tablePxlToReal(s.Centroid(1), s.Centroid(2));
+    shapeProps.Orientation = blockAngle;
     
-    % shapeProps = [blockColour blockShape transferCentroid transferOrientation];
 else 
     % see if there are any blocks at all
     s = regionprops(transfer_ImgBW, 'Centroid');
@@ -182,9 +169,14 @@ else
         shapeProps.Orientation = calculateAngle(transfer_ImgBW);
     else
         % transfer section is empty
-        %display("The transfer section is empty");
+        display("The transfer section is empty");
         shapeProps.Centroid = [];
         shapeProps.Orientation = [];
+    end
 end
+
+%plot(s.Centroid(1), s.Centroid(2), 'b*', 'MarkerSize', 8); hold off;
+%shapeProps
+
 
 end

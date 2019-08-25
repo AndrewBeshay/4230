@@ -1,10 +1,9 @@
-function Main_Ultimate(app)
+function Main_Ultimate()
 
 conveyorList = [];
 patternProps = [];
 
-completed = 0;
-while(~completed)
+while(1)
     if size(conveyorList,1) == 0
         % indicate to move conveyor
         % and wait for a return (while loop) if not detected
@@ -14,7 +13,6 @@ while(~completed)
     
     if size(patternProps.Shape, 2) == 0
         display("The Pattern is complete!, please insert another");
-        completed = 1;
         % wait until there is a new pattern
         patternProps = Main3_IdentifyShapesInPattern();
     end
