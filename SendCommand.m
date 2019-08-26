@@ -5,11 +5,12 @@ function Recieved = SendCommand(app)
     end
 
     
-    query(app.Socket, app.Commands(1));
+    fwrite(app.Socket, app.Commands(1));
     app.Console.Value = {app.Console.Value , strcat('Sent: ',app.Commands(1))};
     app.Commands(1) = [];
     
     pause(1);
-    Recieved = query(socket, cmd);
+    
+    Recieved = fgetl(socket);
     
 end

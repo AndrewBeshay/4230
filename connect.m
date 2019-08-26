@@ -18,7 +18,7 @@ function [socket, Err] = connect()
 
     while ~connected
         socket = tcpip(Robot_IP, PORT, 'Timeout', 0.5);
-        set(socket, 'ReadAsyncMode', 'continuous');
+        set(socket, 'ReadAsyncMode', 'continuous', 'Timeout', 0.5);
         
         % try 
         %     fopen(socket);
@@ -38,7 +38,7 @@ function [socket, Err] = connect()
         pause(5);
 
         socket = tcpip(Simulate_IP, PORT, 'Timeout', 5);
-        set(socket, 'ReadAsyncMode', 'continuous');
+        set(socket, 'ReadAsyncMode', 'continuous', 'Timeout', 0.5);
         
         try
             disp(['FROM connectAttempt: Opening a TCP connection to ', Simulate_IP, ' on port ', num2str(PORT)]);

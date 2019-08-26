@@ -5,7 +5,7 @@ function command = CreateCommand(flag, app)
     if flag == 0
         command = strcat(Header, '0 ');
     elseif flag == 1
-        command = strcat(Header, '1 ', app.status);    
+        command = strcat(Header, '1 ', app.iostatus);    
     elseif flag == 2
         command = strcat(Header, '2 ', app.data);
     elseif flag == 3

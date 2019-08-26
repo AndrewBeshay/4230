@@ -1,7 +1,8 @@
-function CharsOut = ImageProcessing_Final(app)
+function CharsOut = ImageProcessing_Final()
 
 %% Load in the Picture 
-I = imread("ImageFour.jpg");
+% I = imread("ImageFour.jpg");
+    I = imread('testImage.jpg');
 %% Main function Part
 %function to filter out the boxes 
 [BWoverlay,S] = BoxFilter(I);
@@ -13,8 +14,8 @@ I = ~I;
 [BWoverlay,S2] = BoxFilter(I);
 
 %Filtered Image all the Way 
-figure(25);
-imshow(BWoverlay);
+% figure(25);
+% imshow(BWoverlay);
 
 
 %Detecting the Bold Letters
@@ -50,11 +51,11 @@ txtStructs = CreateStructs(BoundaryFilt,mserReg,mserStat);
 b2 = txtStructs(8).points;
 x = b2(:,2);
 y = b2(:,1);
-figure(67);
-imshow(binaryImage);
-hold on;
-plot(x,y,'r-');
-hold off;
+% figure(67);
+% imshow(binaryImage);
+% hold on;
+% plot(x,y,'r-');
+% hold off;
 
 %% Return
 CharsOut = txtStructs;
@@ -252,8 +253,8 @@ textBBoxes(numRegionsInGroup == 1, :) = [];
 % Show the final text detection result.
 ITextRegion = insertShape(Pic, 'Rectangle', textBBoxes,'LineWidth',3);
 
-figure(30)
-imshow(ITextRegion)
+% figure(30)
+% imshow(ITextRegion)
 title('Detected Text')
 for i = 1:size(I,1)
     for j = 1:size(I,2)
@@ -302,20 +303,20 @@ mserReg = mserRegions2;
 mserStat = mserStats2;
 
 %Show remaining regions
-figure(32)
-imshow(BWoverlay)
-hold on
-plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
-title('After Removing Non-Text Regions Based On Geometric Properties')
-hold off
+% figure(32)
+% imshow(BWoverlay)
+% hold on
+% plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
+% title('After Removing Non-Text Regions Based On Geometric Properties')
+% hold off
 
 % Show remaining regions
-figure(45)
-imshow(BWoverlay)
-hold on
-plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
-title('After Removing Non-Text Regions Based On Stroke Width Variation')
-hold off
+% figure(45)
+% imshow(BWoverlay)
+% hold on
+% plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
+% title('After Removing Non-Text Regions Based On Stroke Width Variation')
+% hold off
 
 
 
