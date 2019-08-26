@@ -63,20 +63,22 @@ function inkFinal(app)
             outStr = sprintf("X%3.3fY%3.3fZ%3.3fV%1iI%1i",...
                 outMtx(rowIdx,1,charIdx),outMtx(rowIdx,2,charIdx),outMtx(rowIdx,3,charIdx),...
                 outMtx(rowIdx,4,charIdx),outMtx(rowIdx,5,charIdx));
-            command = CreateCommand(2, outStr);
-            app.Commands = QueueCommand(app.Commands, command);
-            recv = SendCommand(app);
+%             command = CreateCommand(2, outStr);
+%             app.Commands = QueueCommand(app.Commands, command);
+%             recv = SendCommand(app);
             if(sum(outMtx(rowIdx,:,charIdx)) == 0)
                 %String out to turn off ink and return to ink printing home
-                % outStr = "ML 1 InkHome";
-                command = CreateCommand(2, "InkHome");
-                app.Commands = QueueCommand(app.Commands, command);
-                recv = SendCommand(app);
+                outStr = "ML 1 InkHome";
+%                 command = CreateCommand(2, "InkHome");
+%                 app.Commands = QueueCommand(app.Commands, command);
+%                 recv = SendCommand(app);
                 continue; 
             end
 
            %%Add code here to send to robot via TCP 
-
+            command = CreateCommand(2, outStr);
+            app.Commands = QueueCommand(app.Commands, command);
+            recv = SendCommand(app);
            %Wait/check response
            inStr = "";
            if(inStr ~= "Done")
@@ -84,14 +86,14 @@ function inkFinal(app)
            end
         end
 
-        % outStr = "ML 1 InkHome";
+        outStr = "ML 1 InkHome";
         command = CreateCommand(2, "InkHome");
         app.Commands = QueueCommand(app.Commands, command);
         recv = SendCommand(app);
         %Send to Robot
     end
 
-    % outStr = "ML 1 Finish";
+    outStr = "ML 1 Finish";
     command = CreateCommand(2, "Finish");
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
