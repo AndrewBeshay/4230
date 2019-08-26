@@ -22,7 +22,7 @@ while(1)
     % move block from conveyor to transfer section of the table
     % expect a return to indicate completion of moving from conveyor
     % to transfer section
-        [conveyorList] = Main5_RemoveFromConveyorList(conveyorList, conveyorList(1,:));
+    [conveyorList] = Main5_RemoveFromConveyorList(conveyorList, conveyorList(1,:));
         
     shapeProps = Main2_IdentifyBlock();
     if size(shapeProps.Centroid,1) == 0

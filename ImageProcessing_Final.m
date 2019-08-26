@@ -255,7 +255,7 @@ ITextRegion = insertShape(Pic, 'Rectangle', textBBoxes,'LineWidth',3);
 
 % figure(30)
 % imshow(ITextRegion)
-title('Detected Text')
+% title('Detected Text')
 for i = 1:size(I,1)
     for j = 1:size(I,2)
         if( i < ymin | i > ymax | j < xmin | j > xmax)

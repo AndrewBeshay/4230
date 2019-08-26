@@ -3,7 +3,7 @@ function conveyorList = Main1_DetectBlocksOnConveyor()
     clc;
     
     CameraCalibrationConveyor;
-    conveyorImg = imread('Proper_Pics\conveyor6.jpg');
+    conveyorImg = imread('Conveyor6.jpg');
     conveyorImg = undistortImage(conveyorImg,cameraParamsConveyor);
     %figure(); imshow(conveyorImg);
 
