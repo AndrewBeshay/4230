@@ -17,27 +17,62 @@ function [socket, Err] = connect()
     connected = 0;
 
     while ~connected
-        socket = tcpip(Robot_IP, PORT);
+        socket = tcpip(Robot_IP, PORT, 'Timeout', 0.5);
         set(socket, 'ReadAsyncMode', 'continuous');
-
-        if(~isequal(get(socket, 'Status'), 'open'))
-            warning(['Could not open TCP connection to ', Robot_IP, ' on port ', PORT]);
-            %% Attempt to connect to simulator instead
-            socket = tcpip(Simulate_IP, PORT);
-            set(socket, 'ReadAsyncMode', 'continuous');
-            Err = 1;
-            
-            %% Everything broken
-            if(~isequal(get(socket, 'Status'), 'open'))
-                warning(['Could not open TCP connection to ', Robot_IP, ' on port ', PORT]);
-                Err = -1;
-                return;
-            end 
-
-            return;
+        
+        % try 
+        %     fopen(socket);
+        % catch
+        %     warning(['Could not open TCP connection to ', Robot_IP, ' on port ', num2str(PORT), '\n']);
+        % end
+        try
+            disp(['FROM connectAttempt: Opening a TCP connection to ', Robot_IP, ' on port ', num2str(PORT)]);
+            fopen(socket);
+            disp(['FROM connectAttempt: Connected to ', Robot_IP, ' on port ', num2str(PORT)]);
+            connected = 1;
+        catch
+            disp(['FROM connectAttempt: Could not open TCP connection to ', Robot_IP, ' on port ', num2str(PORT)]);
+            connected = 0;
         end
 
+        pause(5);
+
+        socket = tcpip(Simulate_IP, PORT, 'Timeout', 5);
+        set(socket, 'ReadAsyncMode', 'continuous');
+        
+        try
+            disp(['FROM connectAttempt: Opening a TCP connection to ', Simulate_IP, ' on port ', num2str(PORT)]);
+            fopen(socket);
+            disp(['FROM connectAttempt: Connected to ', Simulate_IP, ' on port ', num2str(PORT)]);
+            connnected = 1;
+            Err = 1;
+        catch
+            disp(['FROM connectAttempt: Could not open TCP connection to ', Simulate_IP, ' on port ', num2str(PORT)]);
+            connected = 0;
+            Err = -1;
+        end
+        
+        % if(~isequal(get(socket, 'Status'), 'open'))
+        %     warning(['Could not open TCP connection to ', Robot_IP, ' on port ', num2str(PORT), '\n']);
+        %     %% Attempt to connect to simulator instead
+        %     % pause(5);
+        %     socket = tcpip(Simulate_IP, PORT);%, 'Timeout', 5);
+        %     set(socket, 'ReadAsyncMode', 'continuous');
+            
+        %     Err = 1;
+            
+        %     %% Everything broken
+        %     if(~isequal(get(socket, 'Status'), 'open'))
+        %         warning(['Could not open TCP connection to ', Simulate_IP, ' on port ', num2str(PORT), '\n']);
+        %         Err = -1;
+        %         return;
+        %     end 
+
+        %     return;
+        % end
+        disp(['Connected to: ', num2str(Err)]);
         connected = 1;
+        % fopen(socket);
     end
 
 

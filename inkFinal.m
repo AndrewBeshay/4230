@@ -1,6 +1,7 @@
 %% Load struct from image
 function inkFinal(app)
 %     PxlPoints = ImageProcessing_Final();
+    app.InkCharacters = ImageProcessing_Final();
     PxlPoints = app.InkCharacters;
     %% Initialisation
     numChars = numel(PxlPoints);
