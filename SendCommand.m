@@ -13,6 +13,8 @@ function Recieved = SendCommand(app)
     UpdateConsole(app, commandsent);
     app.Commands(1) = [];
     
+    pause(1);
+    
     Recieved = fgetl(app.Socket);
     
 end
