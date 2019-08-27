@@ -23,6 +23,8 @@ imshow(BWoverlay);
 %------------------Function to Smoothen out the Image---------------------
 binaryImage = SmoothImage(BWoverlay);
 
+
+
 %---------------Finding the Path of the robot----------------------------
 %% 
 
@@ -82,7 +84,7 @@ end
 
 function [BWoverlay,S] = BoxFilter(I)
 BW = im2bw(I);
-s = regionprops(~BW,'Area','BoundingBox','Centroid');
+s = regionprops(~BW,'Area','BoundingBox','Centroid', 'MajorAxisLength');
 S = s;
 corners = [];
    for i = 1:numel(s)
