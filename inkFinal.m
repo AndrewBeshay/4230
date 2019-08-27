@@ -5,7 +5,7 @@ function inkFinal(app)
     PxlPoints = app.InkCharacters;
     %% Initialisation
     % numChars = numel(PxlPoints);
-    %numChars = numel(app.InkCharacters);
+    numChars = numel(app.InkCharacters);
     tableHeight = 147;
     cakeHeight = 100; %Cake is 10cm high = 100mm
     travelHeight = 50; %Travel moves are a further 50mm higher
@@ -33,13 +33,13 @@ function inkFinal(app)
                    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
                 
                 if(deltaXY > 5) %If deltaXY is greater than 5 mm, start new stroke
-               outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
+                   outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
+                       [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
 
-               outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
-                   [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+                   outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
+                       [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
 
-               offset = offset+2;
+                   offset = offset+2;
 
               % outMtx(ptRowIdx + offset,:,charIdx) = ...
                %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
@@ -48,7 +48,7 @@ function inkFinal(app)
               % outMtx(ptRowIdx + offset,:,charIdx) = ...
                %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
 
-            end
+                 end
 
         end
 
@@ -57,7 +57,7 @@ function inkFinal(app)
 
     %% Sending to Robot
     % OLD VERSION, with socket comms
-    %{
+    
     outStr = "";
     inStr = "";
     outStr = "ML 1 InkHome";
@@ -108,8 +108,8 @@ function inkFinal(app)
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
     %Send to Robot
-    %}
     
+    %{
     % New version, with text file
     fileID = fopen('inkPrintCmdList.txt','w');
     stringOut = 'CONST jointtarget WriteStart := [[0,0,0,0,90,0],[9E9,9E9,9E9,9E9,9E9,9E9]];\n';
@@ -165,4 +165,5 @@ function inkFinal(app)
     %fprintf(fileID,stringOut);
     
     fclose(fileID);
+    %}
 end
