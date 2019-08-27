@@ -1,0 +1,118 @@
+%% Load struct from image
+function inkFinal(app)
+%     PxlPoints = ImageProcessing_Final();
+    % app.InkCharacters = ImageProcessing_Final();
+    app.IDLELabel.Text = "PRINTING";
+    app.IDLELabel.FontColor = [0, 1, 1];
+
+    PxlPoints = app.InkCharacters;
+    %% Initialisation
+    % numChars = numel(PxlPoints);
+    numChars = numel(app.InkCharacters);
+    tableHeight = 147;
+    cakeHeight = 100; %Cake is 10cm high = 100mm
+    travelHeight = 50; %Travel moves are a further 50mm higher
+
+    outMtx = zeros(500,5,numChars); %[X,Y,Z,Bold,InkOn] * NumCharsDeep in 3rd Dim
+
+
+    for charIdx=1:1:numChars
+        %RealPoints =  imgPointsToWorld(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
+        
+        %Pixel to world conversion - from Swapnil's Assignment 1
+        %Converting XPixels
+        clear RealPoints
+        RealPoints(:,1) = 0.6498*PxlPoints(charIdx).points(:,1) - 10.8428;
+    
+        %Converting YPixels
+        RealPoints(:,2) = 0.6578*PxlPoints(charIdx).points(:,2) - 523.5955;
+        
+        RealPoints(:,3) = tableHeight + cakeHeight;
+
+
+        offset = 0;
+
+        for ptRowIdx=1:1:(size(RealPoints,1) - 1)
+                deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
+                    + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
+            if(deltaXY > 5)
+               outMtx(ptRowIdx + offset,:,charIdx) = ...
+                   [RealPoints(ptRowIdx-1,1) RealPoints(ptRowIdx-1,2) RealPoints(ptRowIdx-1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
+               outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
+               offset = offset+2;
+
+               outMtx(ptRowIdx + offset,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
+
+            else
+               outMtx(ptRowIdx + offset,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+
+            end
+
+        end
+
+    end
+
+
+    %% Sending to Robot
+
+    outStr = "";
+    inStr = "";
+    outStr = "InkHome";
+    command = CreateCommand(2, outStr);
+    app.Commands = QueueCommand(app.Commands, command);
+    recv = SendCommand(app);
+    recv = ParseMessage(recv);
+    while (recv ~= "DONE")
+        command = CreateCommand(2, outStr);
+        app.Commands = QueueCommand(app.Commands, command);
+        recv = SendCommand(app);
+        recv = ParseMessage(recv);
+    end
+
+    for charIdx=1:1:numChars
+
+        for rowIdx = 1:1:size(outMtx,1)
+            outStr = sprintf("X%3.3fY%3.3fZ%3.3fV%1iI%1i",...
+                outMtx(rowIdx,1,charIdx),outMtx(rowIdx,2,charIdx),outMtx(rowIdx,3,charIdx),...
+                outMtx(rowIdx,4,charIdx),outMtx(rowIdx,5,charIdx));
+
+            if(sum(outMtx(rowIdx,:,charIdx)) == 0)
+                %String out to turn off ink and return to ink printing home
+                outStr = "ML 1 InkHome";
+
+                continue; 
+            end
+
+            %%Add code here to send to robot via TCP 
+            command = CreateCommand(2, outStr);
+            app.Commands = QueueCommand(app.Commands, command);
+            recv = SendCommand(app);
+            recv = ParseMessage(recv);
+            if (recv ~= "DONE")
+                break;
+            end
+
+        end
+
+        outStr = "ML 1 InkHome";
+        command = CreateCommand(2, "InkHome");
+        app.Commands = QueueCommand(app.Commands, command);
+        recv = SendCommand(app);
+        %Send to Robot
+    end
+
+    outStr = "ML 1 Finish";
+    command = CreateCommand(2, "Finish");
+    app.Commands = QueueCommand(app.Commands, command);
+    recv = SendCommand(app);
+    app.InkPrintingLamp.Color = [0, 1, 0];
+    UpdateConsole(app, "Ink Printing Completed");
+    app.IDLELabel.Text = "IDLE";
+    %Send to Robot
+
+end
