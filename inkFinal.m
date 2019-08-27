@@ -7,7 +7,7 @@ function inkFinal(app)
 
     PxlPoints = app.InkCharacters;
     %% Initialisation
-    % numChars = numel(PxlPoints);
+     numChars = numel(PxlPoints);
     %numChars = numel(app.InkCharacters);
     tableHeight = 147;
     cakeHeight = 100; %Cake is 10cm high = 100mm
