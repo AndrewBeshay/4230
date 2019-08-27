@@ -1,6 +1,6 @@
 %% Load in the Picture 
 %Adding a Live Feed thingo 
-I = imread("ImageFour.jpg");
+I = imread("letters.jpg");
 %% Main function Part
 %-----------------Initial function to filter out the boxes----------------
 [BWoverlay,S] = BoxFilter(I);
