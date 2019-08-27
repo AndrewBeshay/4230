@@ -57,8 +57,8 @@ for i = 1:size(BoundaryFilt,1);
     for j = 1:size(mserStat,1)
         %CurrBox = mserStat(j).BoundingBox;
          CurrBox = mserReg(j).PixelList;
-        Cond = (find(temp(5,1) == CurrBox(:,2)));
-         Cond2 =(find(temp(5,2) == CurrBox(:,1)));
+        Cond = (find(temp(5,1) == CurrBox(:,1)));
+         Cond2 =(find(temp(5,2) == CurrBox(:,2)));
 %         Cond = (find(temp(1,1) > CurrBox(2) && temp(1,1) < CurrBox(2) +CurrBox(4)));
 %         Cond2 = (find(temp(1,2) > CurrBox(1) && temp(1,2) < CurrBox(1) +CurrBox(3)));
         
@@ -321,7 +321,7 @@ BW3 = bwmorph(BW3,'clean');
 BW3 = bwmorph(BW3,'spur',4);
 % se = strel('line',5,0);
 % BW3 = imdilate(BW3,se);
-boundaries = bwboundaries(BW3);
+boundaries = bwboundaries(BW3,'noholes');
 end 
 %% Function to convert Binary to RGB Image
 
