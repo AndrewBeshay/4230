@@ -2,6 +2,9 @@
 function inkFinal(app)
 %     PxlPoints = ImageProcessing_Final();
     % app.InkCharacters = ImageProcessing_Final();
+    app.IDLELabel.Text = "PRINTING";
+    app.IDLELabel.FontColor = [0, 1, 1];
+
     PxlPoints = app.InkCharacters;
     %% Initialisation
     % numChars = numel(PxlPoints);
@@ -50,12 +53,17 @@ function inkFinal(app)
 
     outStr = "";
     inStr = "";
-    outStr = "ML 1 InkHome";
-    command = CreateCommand(2, "InkHome");
+    outStr = "InkHome";
+    command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
-
-    %Send to Robot
+    recv = ParseMessage(recv);
+    while (recv ~= "DONE")
+        command = CreateCommand(2, outStr);
+        app.Commands = QueueCommand(app.Commands, command);
+        recv = SendCommand(app);
+        recv = ParseMessage(recv);
+    end
 
     for charIdx=1:1:numChars
 
@@ -97,6 +105,9 @@ function inkFinal(app)
     command = CreateCommand(2, "Finish");
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
+    app.InkPrintingLamp.Color = [0, 1, 0];
+    UpdateConsole(app, "Ink Printing Completed");
+    app.IDLELabel.Text = "IDLE";
     %Send to Robot
 
 end

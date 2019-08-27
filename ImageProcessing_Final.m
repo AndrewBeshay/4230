@@ -1,5 +1,6 @@
-function CharsOut = ImageProcessing_Final()
+function CharsOut = ImageProcessing_Final(app)
 
+    app.WAITINGLabel.Text = "INK PRINTING";
 %% Load in the Picture 
 % I = imread("ImageFour.jpg");
     I = imread('testImage.jpg');

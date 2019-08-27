@@ -14,6 +14,5 @@ function Recieved = SendCommand(app)
     app.Commands(1) = [];
     
     Recieved = fgetl(app.Socket);
-    Recieved
     
 end
