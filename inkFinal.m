@@ -5,7 +5,7 @@ function inkFinal(app)
     PxlPoints = app.InkCharacters;
     %% Initialisation
     % numChars = numel(PxlPoints);
-    numChars = numel(app.InkCharacters);
+    %numChars = numel(app.InkCharacters);
     tableHeight = 147;
     cakeHeight = 100; %Cake is 10cm high = 100mm
     travelHeight = 50; %Travel moves are a further 50mm higher
@@ -16,8 +16,11 @@ function inkFinal(app)
     for charIdx=1:1:numChars
         %RealPoints =  imgPointsToWorld(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
         %RealPoints(:,3) = tableHeight + cakeHeight;
+        clear RealPoints
+        %RealPoints =  tablePxlToReal(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
         
-        RealPoints =  tablePxlToReal(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
+        RealPoints(:,1) = PxlPoints(charIdx).points(:,1)*0.6498 - 10.8428;
+        RealPoints(:,2) = PxlPoints(charIdx).points(:,2)*0.6578 - 523.5955;
         RealPoints(:,3) = tableHeight + cakeHeight;
 
         offset = 0;
@@ -25,21 +28,25 @@ function inkFinal(app)
         for ptRowIdx=1:1:(size(RealPoints,1) - 1)
                 deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
                     + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
-            if(deltaXY > 5)
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx-1,1) RealPoints(ptRowIdx-1,2) RealPoints(ptRowIdx-1,3)+travelHeight PxlPoints(charIdx).Bold 0];
-
+            
+                outMtx(ptRowIdx + offset,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+                
+                if(deltaXY > 5) %If deltaXY is greater than 5 mm, start new stroke
                outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
+               outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
+                   [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
 
                offset = offset+2;
 
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
+              % outMtx(ptRowIdx + offset,:,charIdx) = ...
+               %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
 
-            else
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+            %else
+              % outMtx(ptRowIdx + offset,:,charIdx) = ...
+               %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
 
             end
 
