@@ -14,11 +14,9 @@ function inkFinal(app)
 
 
     for charIdx=1:1:numChars
-        %RealPoints =  imgPointsToWorld(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
-        %RealPoints(:,3) = tableHeight + cakeHeight;
-        
-        RealPoints =  tablePxlToReal(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
+        RealPoints =  imgPointsToWorld(PxlPoints(charIdx).points(:,1),PxlPoints(charIdx).points(:,2));
         RealPoints(:,3) = tableHeight + cakeHeight;
+
 
         offset = 0;
 
@@ -105,7 +103,7 @@ function inkFinal(app)
     
     % New version, with text file
     fileID = fopen('inkPrintCmdList.txt','w');
-    stringOut = 'CONST jointtarget WriteStart := [[0,0,0,0,90,0],[9E9,9E9,9E9,9E9,9E9,9E9]];\n';
+    stringOut = 'CONST jointtarget WriteStart := [ [ 0, 0, 0, 0, 90, 0], [ 9E9, 9E9, 9E9, 9E9, 9E9, 9E9] ];\n';
     fprintf(fileID,stringOut);
     stringOut = 'VAR num Xpos;\n VAR num Ypos;\n VAR num Zpos; \n ';
     fprintf(fileID,stringOut);
@@ -148,14 +146,10 @@ function inkFinal(app)
             
             inkStatOld = inkStatCur;
             rowNum = rowNum+1;
-            
         end
-        
-        stringOut = '!Ink Off \n MoveAbsJ WriteStart , v500 , fine , tSCup;\n';
-        fprintf(fileID,stringOut);
     end
-    %stringOut = 'MoveAbsJ WriteStart , v500 , fine , tSCup;\n';
-    %fprintf(fileID,stringOut);
+    stringOut = 'MoveAbsJ WriteStart , v500 , fine , tSCup;\n';
+    fprintf(fileID,stringOut);
     
     fclose(fileID);
 end

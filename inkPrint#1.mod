@@ -96,7 +96,7 @@ MODULE inkPrint
             targetFull := [targetPos,[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
             
             
-            MoveL targetFull,  moveSpeed, fine, tSCup;
+            MoveL targetFull,  moveSpeed, z1, tSCup;
             
             !Send string back to MATLAB to say okay
             retString := okay;
