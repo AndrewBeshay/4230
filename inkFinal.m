@@ -8,7 +8,7 @@ function inkFinal(app)
     PxlPoints = app.InkCharacters;
     %% Initialisation
     % numChars = numel(PxlPoints);
-    numChars = numel(app.InkCharacters);
+    %numChars = numel(app.InkCharacters);
     tableHeight = 147;
     cakeHeight = 100; %Cake is 10cm high = 100mm
     travelHeight = 50; %Travel moves are a further 50mm higher
@@ -33,23 +33,25 @@ function inkFinal(app)
         offset = 0;
 
         for ptRowIdx=1:1:(size(RealPoints,1) - 1)
-                deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
-                    + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
+            
+            outMtx(ptRowIdx + offset,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
+            
+            
+            deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
+                + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
+            
             if(deltaXY > 5)
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx-1,1) RealPoints(ptRowIdx-1,2) RealPoints(ptRowIdx-1,3)+travelHeight PxlPoints(charIdx).Bold 0];
-
                outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
+               outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
+                   [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
 
                offset = offset+2;
 
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
-
-            else
-               outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+               %outMtx(ptRowIdx + offset,:,charIdx) = ...
+               %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
 
             end
 
