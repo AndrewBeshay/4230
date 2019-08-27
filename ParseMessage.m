@@ -28,5 +28,9 @@ function done = ParseMessage(recv)
             recv = strrep(recv, '3 ', '');
             done = recv;
         end
+        done = '-1';
+    else
+        done = '-1';
+    end
         
 end

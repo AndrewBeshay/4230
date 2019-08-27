@@ -57,11 +57,13 @@ function inkFinal(app)
     command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
+    UpdateConsole(app, char(recv));
     recv = ParseMessage(recv);
     while (recv ~= "DONE")
         command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
         recv = SendCommand(app);
+        UpdateConsole(app, char(recv));
         recv = ParseMessage(recv);
     end
 
@@ -79,10 +81,17 @@ function inkFinal(app)
                 continue; 
             end
 
+            if(outMtx(rowIdx,4,charIdx) == 1)
+                app.Gauge.Value = 100;
+            else
+                app.Gauge.Value = 50;
+            end
+
             %%Add code here to send to robot via TCP 
             command = CreateCommand(2, outStr);
             app.Commands = QueueCommand(app.Commands, command);
             recv = SendCommand(app);
+            UpdateConsole(app, char(recv));
             recv = ParseMessage(recv);
             if (recv ~= "DONE")
                 break;
@@ -90,20 +99,37 @@ function inkFinal(app)
 
         end
 
-        outStr = "ML 1 InkHome";
-        command = CreateCommand(2, "InkHome");
+        outStr = "InkHome";
+        command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
         recv = SendCommand(app);
-        %Send to Robot
+        UpdateConsole(app, char(recv));
+        recv = ParseMessage(recv);
+        while (recv ~= "DONE")
+            command = CreateCommand(2, outStr);
+            app.Commands = QueueCommand(app.Commands, command);
+            recv = SendCommand(app);
+            UpdateConsole(app, char(recv));
+            recv = ParseMessage(recv);
+        end
+
     end
 
-    outStr = "ML 1 Finish";
-    command = CreateCommand(2, "Finish");
+    outStr = "Finish";
+    command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
+    recv = ParseMessage(recv);
+    while (recv ~= "DONE")
+        command = CreateCommand(2, outStr);
+        app.Commands = QueueCommand(app.Commands, command);
+        recv = SendCommand(app);
+        recv = ParseMessage(recv);
+    end
+
     app.InkPrintingLamp.Color = [0, 1, 0];
     UpdateConsole(app, "Ink Printing Completed");
     app.IDLELabel.Text = "IDLE";
-    %Send to Robot
+    app.Gauge.Value = 0;
 
 end

@@ -3,6 +3,7 @@ function Main_Ultimate(app)
 conveyorList = [];
 patternProps = [];
 done = 0;
+
 while(~done)
     if size(conveyorList,1) == 0
         % indicate to move conveyor
