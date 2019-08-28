@@ -3,6 +3,12 @@ function Main_Ultimate(app)
 conveyorList = [];
 patternProps = [];
 done = 0;
+command = CreateCommand(0, "");
+app.Commands = QueueCommand(app.Commands, command);
+
+while app.recieved ~= "1"
+    continue;
+end
 
 while(~done)
     if size(conveyorList,1) == 0
@@ -13,7 +19,7 @@ while(~done)
     end 
     
     if size(patternProps.Shape, 2) == 0
-        display("The Pattern is complete!, please insert another");
+        DISP("The Pattern is complete!, please insert another");
         UpdateConsole(app, "Block Decorating Complete");
         app.CakeDecorationLamp.Color = [0, 1, 0];
         done = 1;
@@ -23,8 +29,9 @@ while(~done)
     end
     
     % send conveyorList(1,:)
-    % command = CreateCommand(2, "InkHome");
-    % app.Commands = QueueCommand(app.Commands, command);
+
+    command = CreateCommand(2, conveyorList(1,:));
+    app.Commands = QueueCommand(app.Commands, command);
     % recv = SendCommand(app);
     
     % move block from conveyor to transfer section of the table
@@ -35,8 +42,9 @@ while(~done)
     shapeProps = Main2_IdentifyBlock(app);
     if size(shapeProps.Centroid,1) == 0
         % nothing on the table, do nothing
-        display("Table is empty");
-        command = CreateCommand(2, "[0,0,0] 0");
+        DISP("Table is empty");
+        command = CreateCommand(2, "cake [0,0,0] 0");
+
         app.Commands = QueueCommand(app.Commands, command);
         % recv = SendCommand(app);
 
@@ -46,8 +54,8 @@ while(~done)
         
         if size(shapeProps.Shape,1) == 0
             % shape is unrecognisable
-            display("The shape and colour is unrecognisable");
-            command = CreateCommand(2, "[0,-409,200] 0");
+            DISP("The shape and colour is unrecognisable");
+            command = CreateCommand(2, "cake [0,-409,200] 0");
             app.Commands = QueueCommand(app.Commands, command);
             % recv = SendCommand(app);
             % move to bin, send [0, -409, 200, 0]
@@ -56,9 +64,9 @@ while(~done)
             destCoordinates = Main4_MatchBlocks(shapeProps, patternProps);
             if size(destCoordinates, 1) > 0
                 % match found
-                temp = num2str(destCoordinate(1,:));
+                temp = num2str(destCoordinates(1,:));
                 temp = sscanf(temp, '%f');
-                outStr = strcat('[', num2str(temp(1)), ',', num2str(temp(2)),',', num2str(temp(3)), "] ", num2str(temp(4)));
+                outStr = strcat("cake [", num2str(temp(1)), ',', num2str(temp(2)),',', num2str(temp(3)), "] ", num2str(temp(4)));
                 command = CreateCommand(2, outStr);
                 app.Commands = QueueCommand(app.Commands, command);
                 % recv = SendCommand(app);
@@ -67,7 +75,7 @@ while(~done)
                 [patternProps] = Main6_RemoveFromPatternList(patternProps, destCoordinates(1,:));
             else 
                 % match not found
-                command = CreateCommand(2, "[0,-409,200] 0");
+                command = CreateCommand(2, "cake [0,-409,200] 0");
                 app.Commands = QueueCommand(app.Commands, command);
                 % recv = SendCommand(app);
                 % move to bin, send [0, -409, 200, 0]
