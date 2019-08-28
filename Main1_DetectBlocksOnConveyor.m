@@ -28,9 +28,9 @@ function conveyorList = Main1_DetectBlocksOnConveyor(app)
         % convert to real life
         conveyorList = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
         conveyorList = [conveyorList zeros(size(conveyorList,1),1)];
-        figure();
-        imshow(BW); hold on;
-        plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
+        % figure();
+        % imshow(BW); hold on;
+        % plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
     else
         display("No blocks detected on the conveyor");
         conveyorList = [];
