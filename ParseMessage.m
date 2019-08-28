@@ -13,9 +13,11 @@ function done = ParseMessage(recv)
             end
         elseif startsWith(recv, '1')
             recv = strrep(recv, '1 ', '');
-            if strlength(recv) == 1
-                done = recv;
+
+            if startsWith(recv, '1')
+                recv = strrep(recv, '1 ', '');
             end
+            done = recv;
         elseif startsWith(recv, '2')
             recv = strrep(recv, '2 ', '');
             done = recv;

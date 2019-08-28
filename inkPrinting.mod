@@ -14,13 +14,13 @@ MODULE inkPrint
         VAR string Yval; !Store Y value (string)
         VAR string Zval; !Store Z value (string)
         VAR string speed; !Store speed boolean (string)
-        VAR string inkStat; !Store ink boolean (string)
+        !VAR string inkStat; !Store ink boolean (string)
         
         VAR num Xstart; !X coordiate start position in String (number)
         VAR num Ystart; !Y coordiate start position in String (number)
         VAR num Zstart; !Z coordiate start position in String (number)
         VAR num Vloc; !Speed Boolean start position in String (number)
-        VAR num Iloc; !Ink Boolean start position in String (number)
+        !VAR num Iloc; !Ink Boolean start position in String (number)
         
         
         VAR num Xlength; !Length of X coordinate value
@@ -31,7 +31,7 @@ MODULE inkPrint
         VAR num Ypos; !Y coordinate, converted to number
         VAR num Zpos; !Z coordinate, converted to number
         VAR bool bold; !Bold boolean, converted to bool
-        VAR bool ink; !Ink boolean, converted to bool
+        !VAR bool ink; !Ink boolean, converted to bool
         VAR pos targetPos; !Target position
         VAR robtarget targetFull; !Robot Target for final position
         VAR speeddata moveSpeed; !Value of speed. 50mm/sec for regular, 100mm/sec for bold. Extract from global variables.
@@ -40,6 +40,7 @@ MODULE inkPrint
         VAR bool check;
         
         VAR num inkHomeMove;
+        VAR num inkStat;
         
         VAR string retString;
         
@@ -47,8 +48,17 @@ MODULE inkPrint
         CmdSize:= StrLen(InkCmd);
         
         inkHomeMove := StrMatch(InkCmd,1,"InkHome");
+        inkStat := StrMatch(InkCmd,1,"Ink0");
+        IF inkStat = 1 THEN
+            InkOff;
+        ENDIF
+        inkStat := StrMatch(InkCmd,1,"Ink1");
+        IF inkStat = 1 THEN
+            InkOn;
+        ENDIF    
         
-        IF inkHomeMove = 4 THEN
+        
+        IF inkHomeMove = 1 THEN
             InkOff; !Check ink is off
             MoveToInkHome; !Move to Ink Home position (UNSW Calib Pos, w/ End Effector vertically down)
             !Send done string back to MATLAB
@@ -59,7 +69,7 @@ MODULE inkPrint
             Ystart := StrMatch(InkCmd,1,"Y");
             Zstart := StrMatch(InkCmd,1,"Z");
             Vloc := StrMatch(InkCmd,1,"V");
-            Iloc := StrMatch(InkCmd,1,"I");
+            !Iloc := StrMatch(InkCmd,1,"I");
             
             Xlength := Ystart - Xstart - 1;
             Ylength := Zstart - Ystart - 1;
@@ -69,14 +79,14 @@ MODULE inkPrint
             Yval := StrPart(InkCmd,Ystart+1,Ylength);
             Zval := StrPart(InkCmd,Zstart+1,Zlength);
             speed := StrPart(InkCmd,Vloc+1,1);
-            inkStat := StrPart(InkCmd,Iloc+1,1);
+            !inkStat := StrPart(InkCmd,Iloc+1,1);
             
 
             check := StrToVal(Xval,Xpos);
             check := StrToVal(Yval,Ypos);
             check := StrToVal(Zval,Zpos);
             check := StrToVal(speed,bold);
-            check := StrToVal(inkStat,ink);
+            !check := StrToVal(inkStat,ink);
             
             IF bold = TRUE THEN
                 moveSpeed := v50;
@@ -84,17 +94,17 @@ MODULE inkPrint
                 moveSpeed := v100;
             ENDIF
             
-            IF ink = TRUE THEN
-                InkOn; !Ink on turns on the vacuum on to simulate ink printing
-            ELSE
-                InkOff; !Ink off turns off the vacuum to simulate stopping ink printing
-            ENDIF
+!            IF ink = TRUE THEN
+!                InkOn; !Ink on turns on the vacuum on to simulate ink printing
+!            ELSE
+!                InkOff; !Ink off turns off the vacuum to simulate stopping ink printing
+!            ENDIF
             
             targetPos := [Xpos,Ypos,Zpos];
             targetFull := [targetPos,[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
             
             
-            MoveL targetFull,  moveSpeed, fine, tSCup;
+            MoveL targetFull,  moveSpeed, z1, tSCup;
             
             !Send string back to MATLAB to say okay
             retString := okay;
