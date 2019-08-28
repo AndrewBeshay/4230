@@ -1,6 +1,6 @@
 %% Load in the Picture 
 %Adding a Live Feed thingo 
-I = imread("cake.jpg");
+I = imread("ImageFive.jpg");
 %% Main function Part
 %-----------------Initial function to filter out the boxes----------------
 [BWoverlay,S] = BoxFilter(I);
@@ -27,7 +27,7 @@ binaryImage = SmoothImage(BWoverlay);
 boundaries = FindPath(binaryImage);
 BoundaryFilt = [];
 for i = 1:size(boundaries,1)
-    if (size(boundaries{i},1) > 144)
+    if (size(boundaries{i},1) > 149)
        BoundaryFilt = [BoundaryFilt;boundaries(i)]; 
     end   
 end
@@ -126,13 +126,13 @@ filterIdx = filterIdx | [mserStats.EulerNumber] < -4;
 mserStats(filterIdx) = [];
 mserRegions(filterIdx) = [];
 
-%Show remaining regions
-figure(52)
-imshow(I)
-hold on
-plot(mserRegions, 'showPixelList', true,'showEllipses',false)
-title('After Removing Non-Text Regions Based On Geometric Properties')
-hold off
+% Show remaining regions
+% figure(22)
+% imshow(I)
+% hold on
+% plot(mserRegions, 'showPixelList', true,'showEllipses',false)
+% title('After Removing Non-Text Regions Based On Geometric Properties')
+% hold off
 
 regionImage = mserStats.Image;
 regionImage = padarray(regionImage, [1 1]);
@@ -145,7 +145,7 @@ strokeWidthImage(~skeletonImage) = 0;
 strokeWidthValues = distanceImage(skeletonImage);   
 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
 % Threshold the stroke width variation metric
-strokeWidthThreshold = 0.35;
+strokeWidthThreshold = 0.3;
 strokeWidthFilterIdx = strokeWidthMetric > strokeWidthThreshold;
 % Process the remaining regions
 for j = 1:numel(mserStats)
