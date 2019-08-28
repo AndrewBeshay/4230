@@ -1,0 +1,296 @@
+%% Load in the Picture 
+I = imread("ImageFour.jpg");
+%imshow(I);
+%% Main function Part
+%Make function to filter out the boxes 
+[BWoverlay,S] = BoxFilter(I);
+[Pic] = convertBinImage2RGB(BWoverlay);
+I = rgb2gray(Pic);
+
+%% MSER Regions
+% Detect MSER regions.
+[mserRegions, mserConnComp] = detectMSERFeatures(I, ... 
+    'RegionAreaRange',[200 8000],'ThresholdDelta',3);
+
+% Use regionprops to measure MSER properties
+mserStats = regionprops(mserConnComp, 'BoundingBox', 'Eccentricity', ...
+    'Solidity', 'Extent', 'Euler', 'Image');
+
+% Compute the aspect ratio using bounding box data.
+bbox = vertcat(mserStats.BoundingBox);
+w = bbox(:,3);
+h = bbox(:,4);
+aspectRatio = w./h;
+% Threshold the data to determine which regions to remove. These thresholds
+% may need to be tuned for other images.
+filterIdx = aspectRatio' > 3; 
+filterIdx = filterIdx | [mserStats.Eccentricity] > .95 ;
+filterIdx = filterIdx | [mserStats.Solidity] < 0.2;
+filterIdx = filterIdx | [mserStats.Extent] < 0.2 | [mserStats.Extent] > 0.7;
+filterIdx = filterIdx | [mserStats.EulerNumber] < -4;
+
+% Remove regions
+mserStats(filterIdx) = [];
+mserRegions(filterIdx) = [];
+
+% Show remaining regions
+% figure(22)
+% imshow(I)
+% hold on
+% plot(mserRegions, 'showPixelList', true,'showEllipses',false)
+% title('After Removing Non-Text Regions Based On Geometric Properties')
+% hold off
+
+regionImage = mserStats.Image;
+regionImage = padarray(regionImage, [1 1]);
+% Compute the stroke width image.
+distanceImage = bwdist(~regionImage); 
+skeletonImage = bwmorph(regionImage, 'thin', inf);
+strokeWidthImage = distanceImage;
+strokeWidthImage(~skeletonImage) = 0;
+% Compute the stroke width variation metric 
+strokeWidthValues = distanceImage(skeletonImage);   
+strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
+% Threshold the stroke width variation metric
+strokeWidthThreshold = 0.3;
+strokeWidthFilterIdx = strokeWidthMetric > strokeWidthThreshold;
+% Process the remaining regions
+for j = 1:numel(mserStats)
+    
+    regionImage = mserStats(j).Image;
+    regionImage = padarray(regionImage, [1 1], 0);
+    
+    distanceImage = bwdist(~regionImage);
+    skeletonImage = bwmorph(regionImage, 'thin', inf);
+    
+    strokeWidthValues = distanceImage(skeletonImage);
+    
+    strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
+    
+    strokeWidthFilterIdx(j) = strokeWidthMetric > strokeWidthThreshold;
+    
+end
+
+% Remove regions based on the stroke width variation
+mserRegions(strokeWidthFilterIdx) = [];
+mserStats(strokeWidthFilterIdx) = [];
+
+% % Show remaining regions
+% figure(25)
+% imshow(I)
+% hold on
+% plot(mserRegions, 'showPixelList', true,'showEllipses',false)
+% title('After Removing Non-Text Regions Based On Stroke Width Variation')
+% hold off
+regionImage = mserStats(3).Image;
+regionImage = padarray(regionImage, [1 1]);
+% Compute the stroke width image.
+distanceImage = bwdist(~regionImage); 
+skeletonImage = bwmorph(regionImage, 'thin', inf);
+strokeWidthImage = distanceImage;
+strokeWidthImage(~skeletonImage) = 0;
+%% Fetching the region where there is text at
+
+% Get bounding boxes for all the regions
+bboxes = vertcat(mserStats.BoundingBox);
+% Convert from the [x y width height] bounding box format to the [xmin ymin
+% xmax ymax] format for convenience.
+xmin = bboxes(:,1);
+ymin = bboxes(:,2);
+xmax = xmin + bboxes(:,3) - 1;
+ymax = ymin + bboxes(:,4) - 1;
+
+% Expand the bounding boxes by a small amount.
+expansionAmount = 0.02;
+xmin = (1-expansionAmount) * xmin;
+ymin = (1-expansionAmount) * ymin;
+xmax = (1+expansionAmount) * xmax;
+ymax = (1+expansionAmount) * ymax;
+
+% Clip the bounding boxes to be within the image bounds
+xmin = max(xmin, 1);
+ymin = max(ymin, 1);
+xmax = min(xmax, size(I,2));
+ymax = min(ymax, size(I,1));
+
+% Show the expanded bounding boxes
+expandedBBoxes = [xmin ymin xmax-xmin+1 ymax-ymin+1];
+IExpandedBBoxes = insertShape(Pic,'Rectangle',expandedBBoxes,'LineWidth',3);
+
+% Compute the overlap ratio
+overlapRatio = bboxOverlapRatio(expandedBBoxes, expandedBBoxes);
+% Set the overlap ratio between a bounding box and itself to zero to
+% simplify the graph representation.
+n = size(overlapRatio,1); 
+overlapRatio(1:n+1:n^2) = 0;
+% Create the graph
+g = graph(overlapRatio);
+% Find the connected text regions within the graph
+componentIndices = conncomp(g);
+% Merge the boxes based on the minimum and maximum dimensions.
+xmin = accumarray(componentIndices', xmin, [], @min);
+ymin = accumarray(componentIndices', ymin, [], @min);
+xmax = accumarray(componentIndices', xmax, [], @max);
+ymax = accumarray(componentIndices', ymax, [], @max);
+% Compose the merged bounding boxes using the [x y width height] format.
+textBBoxes = [xmin ymin xmax-xmin+1 ymax-ymin+1];
+% Remove bounding boxes that only contain one text region
+numRegionsInGroup = histcounts(componentIndices);
+textBBoxes(numRegionsInGroup == 1, :) = [];
+% Show the final text detection result.
+ITextRegion = insertShape(Pic, 'Rectangle', textBBoxes,'LineWidth',3);
+
+figure(30)
+imshow(ITextRegion)
+title('Detected Text')
+for i = 1:size(I,1)
+    for j = 1:size(I,2)
+        if( i < ymin | i > ymax | j < xmin | j > xmax)
+            I(i,j) = 0;
+        end 
+    end 
+    
+end
+%% Final Filtering of the image to get rid of everything except the text 
+
+I = ~I;
+[BWoverlay,S2] = BoxFilter(I);
+
+%Smoothens out the jagged egdes 
+windowSize = 5; % Whatever odd integer you want that's more than 1.
+kernel = ones(5)/windowSize^2;
+blurredImage = conv2(BWoverlay, kernel, 'same');
+binaryImage = blurredImage > 0.5;
+
+%imshow(binaryImage);
+
+%% Finding the Path of the robot
+
+
+%Using the BWBoundaries Method
+BW3 = bwmorph(binaryImage,'thin',inf);
+BW3 = bwmorph(BW3,'clean');
+BW3 = bwmorph(BW3,'spur',4);
+% se = strel('line',5,0);
+% BW3 = imdilate(BW3,se);
+boundaries = bwboundaries(BW3);
+b = boundaries{1};
+%b = b(1:floor(end/2), :);
+BoundaryFilt = [];
+
+for i = 1:size(boundaries,1)
+    if (size(boundaries{i},1) > 149)
+       BoundaryFilt = [BoundaryFilt;boundaries(i)]; 
+    end   
+end 
+
+b2 = BoundaryFilt{8}
+
+x = b2(:,2);
+y = b2(:,1);
+figure(67);
+imshow(binaryImage);
+hold on;
+plot(x,y,'r-');
+hold off;
+
+
+%Make function to Outline the Skeletonisation
+%% Skeletonisation (DONT WORRY ABOUT THIS SHIT
+
+%[xPoints,yPoints, Branchpts,Pathpts] = SkelePath(BWoverlay);
+
+%LetterReg = regionprops(BWoverlay,'Area','BoundingBox','Centroid');
+
+%% Function to filter Boxes
+
+function [BWoverlay,S] = BoxFilter(I)
+BW = im2bw(I);
+s = regionprops(~BW,'Area','BoundingBox','Centroid');
+S = s;
+corners = [];
+   for i = 1:numel(s)
+  %a = find (s(i).Area < 6500 && s(i).Area > 5000 && abs(s(i).BoundingBox(3)-s(i).BoundingBox(4)) < 5);
+  a = find (s(i).Area < 70 && s(i).Area > 0 | (s(i).Area < 3000)) %&& s(i).Area > 0 && abs(s(i).BoundingBox(3)-s(i).BoundingBox(4)) < 50));
+   if (a == 1)
+        corners = [corners;s(i).BoundingBox];
+    end
+   end 
+    
+BWoverlay =  imcomplement(BW);
+   
+   for i = 1:size(corners,1)
+
+    BWoverlay(corners(i,2):(corners(i,2) + corners(i,4)),...
+        corners(i,1):(corners(i,1) + corners(i,3)))=0;
+   end    
+% figure(20)
+% imshow(BWoverlay);
+end 
+
+
+%% Function to create the skeletonised path
+
+function [Xpoints,Ypoints,BrchPts,Allpts,RGBPic] =  SkelePath(BWoverlay)
+BW = im2bw(BWoverlay);
+% BW2 = bwmorph(BW,'remove');
+% BW3 = bwmorph(BW,'skel',Inf);
+% imshow(BW3)
+
+%BW2 = bwmorph(BW,'skel',15);
+BW2 = bwmorph(BW,'skel',inf);
+BW2 = bwmorph(BW2,'clean');
+BW2 = bwmorph(BW2,'spur',8);
+out2 = BW2;
+%out2 = bwmorph(BW2,'hbreak');
+%out2 = bwmorph(BW2,'majority');
+Allpts = BW2;
+%out2 = bwmorph(BW2,'branchpoints');
+out = bwskel(BW,'MinBranchLength',0);
+BrchPts = out2;
+
+Xpoints = [];
+Ypoints = [];
+
+XBranchpts = [];
+YBranchpts = [];
+
+for i = 1:size(out,2)
+    for j = 1:size(out,1)
+        if (find(out(j,i) == true))
+            Xpoints = [Xpoints;j];
+            Ypoints = [Ypoints;i];    
+        end 
+    end 
+end 
+
+for i = 1:size(out2,2)
+    for j = 1:size(out2,1)
+        if (find(out2(j,i) == true))
+            XBranchpts = [XBranchpts;j];
+            YBranchpts = [YBranchpts;i];    
+        end 
+    end 
+end 
+%Plotting Stuff
+% figure(21);
+% imshow(BWoverlay);
+% hold on;
+% plot(YBranchpts,XBranchpts,'r*');
+% % hold on;
+% % plot(Ypoints,Xpoints,'r*');
+% hold off;
+
+
+
+% figure(22);
+% imshow(labeloverlay(I,out,'Transparency',0))
+
+end 
+
+%% Function to convert Binary to RGB Image
+
+function [RGB_Image] = convertBinImage2RGB(BinImage)
+  RGB_Image = uint8( BinImage(:,:,[1 1 1]) * 255 );
+end 
+
