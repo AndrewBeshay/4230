@@ -1,6 +1,6 @@
 MODULE Move_Chocolates
-    PERS robtarget target:=[[0,409,22.1],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    PERS string currStage:= "Waiting for Results";
+    PERS robtarget target:=[[200,-100,147],[0,0.130526,-0.991445,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PERS string currStage:= "Waiting for Cake";!"Waiting for Conveyor";
     PERS Block convBlock;
     PERS Block cakeBlock;
     VAR string mlBlocks;
@@ -14,8 +14,8 @@ MODULE Move_Chocolates
     VAR num SolRun := 0;
     
     PROC main()         
-        Open "HOME:/hello.txt", mlStream\Read;
-        Open "HOME:/bye.txt", mlSend\Write;
+        Open "HOME:/LOGFILE.txt", mlStream\Read;
+        Open "HOME:/outputLog.txt", mlSend\Write;
             
         IF currStage = "Waiting for Cake" THEN
             GOTO Cake_Wait;
@@ -37,7 +37,7 @@ MODULE Move_Chocolates
             GOTO Done;
         
         Conveyor:
-            mlBlocks := ReadStr(mlStream \Delim:= " ");
+            mlBlocks := ReadStr(mlStream \Delim:= " ");!"conv";
             IF mlBlocks = "conv" THEN
                 convBlock:=getConvBlocks();
                 IF posValid AND oriValid THEN
@@ -58,7 +58,7 @@ MODULE Move_Chocolates
             GOTO Done;
                 
         Looking:
-            mlBlocks := ReadStr(mlStream \Delim:= " ");
+            mlBlocks := ReadStr(mlStream \Delim:= " ");!"cake";
             IF mlBlocks = "cake" THEN
                 cakeBlock:=getCakeBlock();
                 IF posValid AND oriValid THEN

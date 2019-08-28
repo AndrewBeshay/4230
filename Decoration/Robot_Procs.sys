@@ -30,7 +30,7 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         WaitTime \InPos, 0;
         MoveL t, v100, fine, tSCup;
         SuctionOff;
-        WaitTime 0.3;
+        WaitTime 0.5;
         GripLoad load0;
         MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
     ENDPROC
@@ -63,7 +63,11 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         posValid := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
         oriValid := StrToVal(mlBlocks, newBlock.r);   !always 0 in this part
-        waittime 1;
+        
+!        HARDCODED VERSION
+!        posValid := StrToVal("[x,y,z]", newBlock.p);
+!        oriValid := StrToVal("0", newBlock.r);
+        
         RETURN newBlock;
     ENDFUNC
     
@@ -73,7 +77,11 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
         posValid := StrToVal(mlBlocks, newBlock.p);
         mlBlocks := ReadStr(mlStream \Delim:= " ");
         oriValid := StrToVal(mlBlocks, newBlock.r);
-        waittime 1;
+        
+!        HARDCODED VERSION
+!        posValid := StrToVal("[x,y,z]", newBlock.p);
+!        oriValid := StrToVal("r", newBlock.r);        
+
         RETURN newBlock;
     ENDFUNC
     
