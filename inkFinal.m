@@ -108,6 +108,7 @@ function inkFinal(app)
            if(inStr ~= "Done")
                 break;
            end
+           inkFlowOld = inkFlow;
         end
 
         outStr = "InkHome";
