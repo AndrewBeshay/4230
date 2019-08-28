@@ -1,11 +1,10 @@
 %% Load in the Picture 
 %Adding a Live Feed thingo 
-I = imread("ImageFour.jpg");
+I = imread("sup.jpg");
 %% Main function Part
 %-----------------Initial function to filter out the boxes----------------
 [BWoverlay,S] = BoxFilter(I);
 %------------------Finding the text Area----------------------------------
-
 %% 
 [Pic] = convertBinImage2RGB(BWoverlay);
 I = rgb2gray(Pic);
@@ -84,7 +83,7 @@ s = regionprops(~BW,'Area','BoundingBox','Centroid', 'MajorAxisLength');
 S = s;
 corners = [];
    for i = 1:numel(s)
-  a = find (s(i).Area < 70 && s(i).Area > 0 | (s(i).Area < 3000));
+  a = find (s(i).Area < 70 && s(i).Area > 0 || (s(i).MajorAxisLength < 72))  %%(s(i).Area < 3000));
    if (a == 1)
         corners = [corners;s(i).BoundingBox];
     end
