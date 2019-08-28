@@ -1,32 +1,38 @@
 
-function done = ParseMessage(recv)
+function done = ParseMessage(app)
 
-    recv = char(recv);
+    app.recieved = char(app.recieved);
 
-    if startsWith(recv, 'RS') 
-        recv = strrep(recv, 'RS', '');
+    if startsWith(app.recieved, 'RS') 
+        app.recieved = strrep(app.recieved, 'RS', '');
 
-        if startsWith(recv, '0')
-            recv = strrep(recv, '0 ', '');
-            if strlength(recv) == 4
-                done = recv;
+        if startsWith(app.recieved, '0')
+            app.recieved = strrep(app.recieved, '0 ', '');
+            if strlength(app.recieved) == 4
+                done = app.recieved;
             end
-        elseif startsWith(recv, '1')
-            recv = strrep(recv, '1 ', '');
-            if strlength(recv) == 1
-                done = recv;
+        elseif startsWith(app.recieved, '1')
+            app.recieved = strrep(app.recieved, '1 ', '');
+
+            if startsWith(app.recieved, '1')
+                app.recieved = strrep(app.recieved, '1 ', '');
             end
-        elseif startsWith(recv, '2')
-            recv = strrep(recv, '2 ', '');
-            done = recv;
-        elseif startsWith(recv, '3')
-            recv = strrep(recv, '3 ', '');
-            if strlength(recv) == 8
-                done = recv;
-            end
-        elseif startsWith(recv, '4')
-            recv = strrep(recv, '3 ', '');
-            done = recv;
+            done = app.recieved;
+        elseif startsWith(app.recieved, '2')
+            app.recieved = strrep(app.recieved, '2 ', '');
+            done = app.recieved;
+        elseif startsWith(app.recieved, '3')
+            app.recieved = strrep(app.recieved, '3 ', '');
+
+            app.ErrorFlag = 1;
+            app.ErrorMsg = app.recieved;
+            % if strlength(app.recieved) == 8
+            %     done = app.recieved;
+            % end
+            done = app.recieved;
+        elseif startsWith(app.recieved, '4')
+            app.recieved = strrep(app.recieved, '3 ', '');
+            done = app.recieved;
         end
         done = '-1';
     else
