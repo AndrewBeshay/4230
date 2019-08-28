@@ -18,7 +18,7 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     PROC pick(robtarget t)
         MoveJ Offs(t, 0, 0, 100), v200, fine, tSCup;
         WaitTime \InPos, 0;
-        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
+        MoveL t, v100, fine, tSCup;
         SuctionOn;
         WaitTime 0.5;
         GripLoad loChoc;
@@ -28,7 +28,7 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     PROC place(robtarget t)
         MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;
         WaitTime \InPos, 0;
-        MoveL Offs(t, 0, 0, 30), v100, fine, tSCup;
+        MoveL t, v100, fine, tSCup;
         SuctionOff;
         WaitTime 0.3;
         GripLoad load0;
@@ -37,9 +37,9 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
     
     PROC Conv2Table(Block b)
         target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-        MoveJ Offs(conv2tableDodge, 0, 0, 0), v400, fine, tSCup;
+        MoveJ conv2tableDodge, v400, z10, tSCup;
         pick(target);
-        MoveJ Offs(conv2tableDodge, 0, 0, 0), v100, fine, tSCup;! \TLoad:=loChoc;
+        MoveJ conv2tableDodge, v100, z10, tSCup;
         place(lookSpot);
     ENDPROC
     
@@ -100,6 +100,42 @@ MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
             Write mlSend, "ERROR:Values_unreadable";
         ELSEIF er = 4 THEN
             Write mlSend, "ERROR:Unknown";
+        ENDIF
+    ENDPROC
+    
+    !VACUUM
+    PROC VacOn()
+        SetDO DO10_1, 1;
+        IF VacRun <> 1 THEN
+            VacRun := 1;
+            updateGUI := TRUE;
+        ENDIF
+        
+    ENDPROC
+    
+    PROC VacOff()
+        SetDO DO10_1, 0;
+        IF VacRun <> 0 THEN
+            VacRun := 0;
+            updateGUI := TRUE;
+        ENDIF
+    ENDPROC
+    
+    PROC SuctionOn()
+        VacOn;
+        SetDO DO10_2, 1;
+        IF SolRun <> 1 THEN
+            SolRun := 1;
+            updateGUI := TRUE;
+        ENDIF
+    ENDPROC
+    
+    PROC SuctionOff()
+        VacOff;
+        SetDO DO10_2, 0;
+        IF SolRun <> 0 THEN
+            SolRun := 0;
+            updateGUI := TRUE;
         ENDIF
     ENDPROC
     

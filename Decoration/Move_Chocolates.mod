@@ -1,6 +1,6 @@
 MODULE Move_Chocolates
     PERS robtarget target:=[[0,409,22.1],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    PERS string currStage:= "Waiting for Conveyor";
+    PERS string currStage:= "Waiting for Results";
     PERS Block convBlock;
     PERS Block cakeBlock;
     VAR string mlBlocks;
@@ -8,8 +8,12 @@ MODULE Move_Chocolates
     VAR iodev mlSend;
     VAR bool posValid;
     VAR bool oriValid;
-
-    PROC main()
+    
+    VAR num VacRun := 0;
+    PERS bool updateGUI := TRUE;
+    VAR num SolRun := 0;
+    
+    PROC main()         
         Open "HOME:/hello.txt", mlStream\Read;
         Open "HOME:/bye.txt", mlSend\Write;
             
