@@ -36,7 +36,7 @@ while(~done)
     if size(shapeProps.Centroid,1) == 0
         % nothing on the table, do nothing
         display("Table is empty");
-        command = CreateCommand(2, "0 0 0 0");
+        command = CreateCommand(2, "[0,0,0] 0");
         app.Commands = QueueCommand(app.Commands, command);
         % recv = SendCommand(app);
 
@@ -47,7 +47,7 @@ while(~done)
         if size(shapeProps.Shape,1) == 0
             % shape is unrecognisable
             display("The shape and colour is unrecognisable");
-            command = CreateCommand(2, "0 -409 200 0");
+            command = CreateCommand(2, "[0,-409,200] 0");
             app.Commands = QueueCommand(app.Commands, command);
             % recv = SendCommand(app);
             % move to bin, send [0, -409, 200, 0]
@@ -56,7 +56,10 @@ while(~done)
             destCoordinates = Main4_MatchBlocks(shapeProps, patternProps);
             if size(destCoordinates, 1) > 0
                 % match found
-                command = CreateCommand(2, destCoordinate(1,:));
+                temp = num2str(destCoordinate(1,:));
+                temp = sscanf(temp, '%f');
+                outStr = strcat('[', num2str(temp(1)), ',', num2str(temp(2)),',', num2str(temp(3)), "] ", num2str(temp(4)));
+                command = CreateCommand(2, outStr);
                 app.Commands = QueueCommand(app.Commands, command);
                 % recv = SendCommand(app);
                 % send destCoordinate(1,:)
@@ -64,7 +67,7 @@ while(~done)
                 [patternProps] = Main6_RemoveFromPatternList(patternProps, destCoordinates(1,:));
             else 
                 % match not found
-                command = CreateCommand(2, "0 -409 200 0");
+                command = CreateCommand(2, "[0,-409,200] 0");
                 app.Commands = QueueCommand(app.Commands, command);
                 % recv = SendCommand(app);
                 % move to bin, send [0, -409, 200, 0]

@@ -91,10 +91,10 @@ function inkFinal(app)
             inkFlow = outMtx(rowIdx,5,charIdx);
             if inkFlow ~= inkFlowOld && inkFlow == 1
                 %Turn ink on
-                outStr = "0010";
+                outStr = num2str(dec2bin(bitset(app.iostatus, 4, 1)));
             elseif inkFlow ~= inkFlowOld && inkFlow == 0
                 %Turn ink off
-                outStr = "0000";
+                outStr = num2str(dec2bin(bitset(app.iostatus, 4, 0)));
             end
         
             command = CreateCommand(2, outStr);
