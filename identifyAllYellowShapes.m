@@ -1,5 +1,5 @@
 function [Shape, Centroid, Orientation] = identifyAllYellowShapes(myPatternBW, ...
-    table_ImgBW, cicleAreaThreshold, area2Threshold)
+    table_ImgBW)
 
     circle = 2.1;
     flower = 2.2;
@@ -20,11 +20,11 @@ function [Shape, Centroid, Orientation] = identifyAllYellowShapes(myPatternBW, .
         shapeBW = removeOtherShapes(myPatternBW, centroids(i,:));
         s = regionprops(shapeBW, 'Area', 'Perimeter', 'MajorAxisLength');
         
-        if s.Area > cicleAreaThreshold
+        if s.Area > 1150
             % circle
             Shape = [Shape; circle];
             
-        elseif s.Area > area2Threshold 
+        elseif s.Area > 720 
             % either flower, diamond or square            
             if s.Perimeter > 150
                 Shape = [Shape; flower];

@@ -1,4 +1,4 @@
-function [Shape, Centroid, Orientation] = identifyAllRedShapes(myPatternBW, table_ImgBW)
+function [Shape, Centroid, Orientation] = identifyAllBlueShapes2(myPatternBW, table_ImgBW)
 
     circle = 2.1;
     flower = 2.2;
@@ -17,16 +17,15 @@ function [Shape, Centroid, Orientation] = identifyAllRedShapes(myPatternBW, tabl
     for i = 1: size(centroids,1)
         blockBW = removeOtherShapes(table_ImgBW, centroids(i,:));
         shapeBW = removeOtherShapes(myPatternBW, centroids(i,:));
-        s = regionprops(shapeBW, 'Area', 'Perimeter', 'MajorAxisLength', 'EquivDiameter');
-        diff = abs(s.MajorAxisLength - s.EquivDiameter);
+        s = regionprops(shapeBW, 'Area', 'Perimeter', 'MajorAxisLength');
         
-        if s.Area > 1150
+        if s.Area > 1000
             % circle
             Shape = [Shape; circle];
             
-        elseif s.Area > 720 
+        elseif s.Area > 600 
             % either flower, diamond or square            
-            if s.Perimeter > 130
+            if s.Perimeter > 120
                 Shape = [Shape; flower];
             else 
                 shapeBW = rotateToOriginal(shapeBW, blockBW);
@@ -44,7 +43,7 @@ function [Shape, Centroid, Orientation] = identifyAllRedShapes(myPatternBW, tabl
             
         else 
             % 4 star or 6 star
-            if diff > 5.2
+            if s.MajorAxisLength > 33.8
                 Shape = [Shape; star4];
             else
                 Shape = [Shape; star6];
