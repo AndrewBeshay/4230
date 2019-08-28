@@ -2,6 +2,9 @@
 function inkFinal(app)
 %     PxlPoints = ImageProcessing_Final();
     % app.InkCharacters = ImageProcessing_Final();
+    app.IDLELabel.Text = "PRINTING";
+    app.IDLELabel.FontColor = [0, 1, 1];
+
     PxlPoints = app.InkCharacters;
     %% Initialisation
     % numChars = numel(PxlPoints);
@@ -26,27 +29,31 @@ function inkFinal(app)
         offset = 0;
 
         for ptRowIdx=1:1:(size(RealPoints,1) - 1)
-                deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
-                    + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
-            
-                outMtx(ptRowIdx + offset,:,charIdx) = ...
-                   [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
-                
-                if(deltaXY > 5) %If deltaXY is greater than 5 mm, start new stroke
-                   outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
-                       [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
 
-                   outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
-                       [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+            deltaXY = sqrt((RealPoints(ptRowIdx+1,1) - (RealPoints(ptRowIdx,1)))^2 ...
+                + ((RealPoints(ptRowIdx+1,2)) - (RealPoints(ptRowIdx,2)))^2);
+        
+            outMtx(ptRowIdx + offset,:,charIdx) = ...
+               [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+            
+            if(deltaXY > 5) %If deltaXY is greater than 5 mm, start new stroke
+               outMtx(ptRowIdx + offset + 1,:,charIdx) = ...
+                   [RealPoints(ptRowIdx,1) RealPoints(ptRowIdx,2) RealPoints(ptRowIdx,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
+               outMtx(ptRowIdx + offset + 2,:,charIdx) = ...
+                   [RealPoints(ptRowIdx+1,1) RealPoints(ptRowIdx+1,2) RealPoints(ptRowIdx+1,3)+travelHeight PxlPoints(charIdx).Bold 0];
+
 
                    offset = offset+2;
 
-              % outMtx(ptRowIdx + offset,:,charIdx) = ...
-               %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
 
-            %else
-              % outMtx(ptRowIdx + offset,:,charIdx) = ...
-               %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+          % outMtx(ptRowIdx + offset,:,charIdx) = ...
+           %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1];
+
+        %else
+          % outMtx(ptRowIdx + offset,:,charIdx) = ...
+           %    [RealPoints(ptRowIdx,:) PxlPoints(charIdx).Bold 1]; 
+
 
                  end
 
@@ -56,16 +63,34 @@ function inkFinal(app)
 
 
     %% Sending to Robot
-    % OLD VERSION, with socket comms
-    
-    outStr = "";
+
+
+
+    command = CreateCommand(0, "");
+    app.Commands = QueueCommand(app.Commands, command);
+
+    while app.recieved ~= "1"
+        continue;
+    end
+
+
+
     inStr = "";
     outStr = "InkHome";
-    command = CreateCommand(2, "InkHome");
+    command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
-    recv = SendCommand(app);
+    % recv = SendCommand(app);
+    UpdateConsole(app, char(app.recieved));
+    % app.recieved = ParseMessage(recv);
+    while (app.recieved ~= "DONE")
+        command = CreateCommand(2, outStr);
+        app.Commands = QueueCommand(app.Commands, command);
+        % recv = SendCommand(app);
+        UpdateConsole(app, char(app.recieved));
+        % recv = ParseMessage(recv);
+    end
 
-    %Send to Robot
+    app.recieved = "";
 
     for charIdx=1:1:numChars
         inkFlowOld = 0;
@@ -73,6 +98,7 @@ function inkFinal(app)
             inkFlow = outMtx(rowIdx,5,charIdx);
             if inkFlow ~= inkFlowOld && inkFlow == 1
                 %Turn ink on
+
                 outStr = "Ink1";
             elseif inkFlow ~= inkFlowOld && inkFlow == 0
                 %Turn ink off
@@ -82,46 +108,56 @@ function inkFinal(app)
             command = CreateCommand(2, outStr);
             app.Commands = QueueCommand(app.Commands, command);
             recv = SendCommand(app);
+
+                outStr = num2str(dec2bin(bitset(app.iostatus, 4, 1)));
+            elseif inkFlow ~= inkFlowOld && inkFlow == 0
+                %Turn ink off
+                outStr = num2str(dec2bin(bitset(app.iostatus, 4, 0)));
+            end
+        
+            command = CreateCommand(2, outStr);
+            app.Commands = QueueCommand(app.Commands, command);
+            % recv = SendCommand(app);
+
             
             
             outStr = sprintf("X%3.3fY%3.3fZ%3.3fV%1i",...
                 outMtx(rowIdx,1,charIdx),outMtx(rowIdx,2,charIdx),outMtx(rowIdx,3,charIdx),...
                 outMtx(rowIdx,4,charIdx));
-%             command = CreateCommand(2, outStr);
-%             app.Commands = QueueCommand(app.Commands, command);
-%             recv = SendCommand(app);
+
+
             if(sum(outMtx(rowIdx,:,charIdx)) == 0)
                 %String out to turn off ink and return to ink printing home
                 outStr = "InkHome";
-%                 command = CreateCommand(2, "InkHome");
-%                 app.Commands = QueueCommand(app.Commands, command);
-%                 recv = SendCommand(app);
                 continue; 
             end
 
-           %%Add code here to send to robot via TCP 
+            %%Add code here to send to robot via TCP 
             command = CreateCommand(2, outStr);
             app.Commands = QueueCommand(app.Commands, command);
-            recv = SendCommand(app);
-           %Wait/check response
-           inStr = "";
-           if(inStr ~= "Done")
+            % recv = SendCommand(app);
+            %Wait/check response
+            % inStr = "";
+            if(app.recieved ~= "Done")
                 break;
            end
            inkFlowOld = inkFlow;
         end
 
         outStr = "InkHome";
-        command = CreateCommand(2, "InkHome");
+        command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
-        recv = SendCommand(app);
+
+        while app.recieved ~= "Done"
+            continue;
+        end
+        % recv = SendCommand(app);
         %Send to Robot
     end
 
     outStr = "Finish";
-    command = CreateCommand(2, "Finish");
+    command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
-    recv = SendCommand(app);
     %Send to Robot
     
     %{
@@ -181,4 +217,18 @@ function inkFinal(app)
     
     fclose(fileID);
     %}
+
+    while (app.recieved ~= "DONE")
+        command = CreateCommand(2, outStr);
+        app.Commands = QueueCommand(app.Commands, command);
+
+    end
+    
+    app.recieved = "";
+
+    app.InkPrintingLamp.Color = [0, 1, 0];
+    UpdateConsole(app, "Ink Printing Completed");
+    app.IDLELabel.Text = "IDLE";
+
+
 end

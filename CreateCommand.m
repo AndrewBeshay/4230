@@ -18,6 +18,6 @@ function command = CreateCommand(flag, data)
         command = -1;
     end
 
-    command
+    % command
 
 end

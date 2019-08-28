@@ -40,6 +40,7 @@ MODULE inkPrint
         VAR bool check;
         
         VAR num inkHomeMove;
+
         VAR num inkStatOn;
         VAR num inkStatOff;
         
@@ -49,6 +50,7 @@ MODULE inkPrint
         CmdSize:= StrLen(InkCmd);
         
         inkHomeMove := StrMatch(InkCmd,1,"InkHome");
+
         inkStatOff := StrMatch(InkCmd,1,"Ink0");
         inkStatOn := StrMatch(InkCmd,1,"Ink1");
         IF inkStatOff = 1 THEN
@@ -58,6 +60,9 @@ MODULE inkPrint
             InkOn;
             retString := okay;
         ELSEIF inkHomeMove = 1 THEN
+
+        IF inkHomeMove = 1 THEN
+
             InkOff; !Check ink is off
             MoveToInkHome; !Move to Ink Home position (UNSW Calib Pos, w/ End Effector vertically down)
             !Send done string back to MATLAB

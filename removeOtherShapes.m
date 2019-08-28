@@ -30,6 +30,10 @@ ymin = max(ymin, 1);
 xmax = min(xmax, size(table_ImgBW,2));
 ymax = min(ymax, size(table_ImgBW,1));
 
+%figure;
+%imshow(table_ImgBW); hold on;
+%plot(blockCentroids(:,1), blockCentroids(:,2)); hold off;
+
 % find the closest distance of the shape to the block
 distance = sqrt( (blockCentroids(:,1) - shapeCentroids(1)).^2 + (blockCentroids(:,2) - shapeCentroids(2)).^2 );
 furthestIdx = find(distance ~= min(distance));

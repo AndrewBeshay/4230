@@ -26,7 +26,7 @@ function [Shape, Centroid, Orientation] = identifyAllRedShapes(myPatternBW, tabl
             
         elseif s.Area > 720 
             % either flower, diamond or square            
-            if s.Perimeter > 150
+            if s.Perimeter > 130
                 Shape = [Shape; flower];
             else 
                 shapeBW = rotateToOriginal(shapeBW, blockBW);

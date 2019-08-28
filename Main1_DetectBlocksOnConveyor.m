@@ -1,9 +1,13 @@
-function conveyorList = Main1_DetectBlocksOnConveyor()
+function conveyorList = Main1_DetectBlocksOnConveyor(app)
     % Detect on the Conveyer to see if blocks exist, return the centroids
     clc;
     
     CameraCalibrationConveyor;
-    conveyorImg = imread('Conveyor6.jpg');
+    if app.ConType == 0
+        conveyorImg = app.SnapConv;
+    else
+        conveyorImg = imread('Conveyor6.jpg');
+    end
     conveyorImg = undistortImage(conveyorImg,cameraParamsConveyor);
     %figure(); imshow(conveyorImg);
 
@@ -24,9 +28,9 @@ function conveyorList = Main1_DetectBlocksOnConveyor()
         % convert to real life
         conveyorList = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
         conveyorList = [conveyorList zeros(size(conveyorList,1),1)];
-        figure();
-        imshow(BW); hold on;
-        plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
+        % figure();
+        % imshow(BW); hold on;
+        % plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
     else
         display("No blocks detected on the conveyor");
         conveyorList = [];
