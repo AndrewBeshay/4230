@@ -1,9 +1,13 @@
-function conveyorList = Main1_DetectBlocksOnConveyor()
+function conveyorList = Main1_DetectBlocksOnConveyor(app)
     % Detect on the Conveyer to see if blocks exist, return the centroids
     clc;
     
     CameraCalibrationConveyor;
-    conveyorImg = imread('Conveyor6.jpg');
+    if app.ConType == 0
+        conveyorImg = app.SnapConv;
+    else
+        conveyorImg = imread('Conveyor6.jpg');
+    end
     conveyorImg = undistortImage(conveyorImg,cameraParamsConveyor);
     %figure(); imshow(conveyorImg);
 

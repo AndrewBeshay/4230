@@ -56,17 +56,17 @@ function inkFinal(app)
     outStr = "InkHome";
     command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
-    recv = SendCommand(app);
-    UpdateConsole(app, char(recv));
-    recv = ParseMessage(recv);
-    while (recv ~= "DONE")
+    % recv = SendCommand(app);
+    UpdateConsole(app, char(app.recieved));
+    % app.recieved = ParseMessage(recv);
+    while (app.recieved ~= "DONE")
         command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
-        recv = SendCommand(app);
+        % recv = SendCommand(app);
         UpdateConsole(app, char(recv));
-        recv = ParseMessage(recv);
+        % recv = ParseMessage(recv);
     end
-
+    app.recieved = "";
     for charIdx=1:1:numChars
 
         for rowIdx = 1:1:size(outMtx,1)
@@ -90,10 +90,10 @@ function inkFinal(app)
             %%Add code here to send to robot via TCP 
             command = CreateCommand(2, outStr);
             app.Commands = QueueCommand(app.Commands, command);
-            recv = SendCommand(app);
-            UpdateConsole(app, char(recv));
-            recv = ParseMessage(recv);
-            if (recv ~= "DONE")
+            % recv = SendCommand(app);
+            UpdateConsole(app, char(app.recieved));
+            % recv = ParseMessage(recv);
+            if (app.recieved ~= "DONE")
                 break;
             end
 
@@ -102,30 +102,31 @@ function inkFinal(app)
         outStr = "InkHome";
         command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
-        recv = SendCommand(app);
-        UpdateConsole(app, char(recv));
-        recv = ParseMessage(recv);
-        while (recv ~= "DONE")
+        % recv = SendCommand(app);
+        UpdateConsole(app, char(app.recieved));
+        % recv = ParseMessage(recv);s
+        while (app.recieved ~= "DONE")
             command = CreateCommand(2, outStr);
             app.Commands = QueueCommand(app.Commands, command);
-            recv = SendCommand(app);
-            UpdateConsole(app, char(recv));
-            recv = ParseMessage(recv);
+            % recv = SendCommand(app);
+            UpdateConsole(app, char(app.recieved));
+            % recv = ParseMessage(recv);
         end
-
+        app.recieved = "";
     end
 
     outStr = "Finish";
     command = CreateCommand(2, outStr);
     app.Commands = QueueCommand(app.Commands, command);
-    recv = SendCommand(app);
-    recv = ParseMessage(recv);
-    while (recv ~= "DONE")
+    % recv = SendCommand(app);
+    % recv = ParseMessage(recv);
+    while (app.recieved ~= "DONE")
         command = CreateCommand(2, outStr);
         app.Commands = QueueCommand(app.Commands, command);
-        recv = SendCommand(app);
-        recv = ParseMessage(recv);
+        % recv = SendCommand(app);
+        % recv = ParseMessage(recv);
     end
+    app.recieved = "";
 
     app.InkPrintingLamp.Color = [0, 1, 0];
     UpdateConsole(app, "Ink Printing Completed");

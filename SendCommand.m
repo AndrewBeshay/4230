@@ -11,7 +11,7 @@ function Recieved = SendCommand(app)
     commandsent = char(commandsent);
     % app.Console.Value = {app.Console.Value , strcat('Sent: ',app.Commands(1))};
     UpdateConsole(app, commandsent);
-    app.Commands(1) = [];
+    
     
     pause(1);
 

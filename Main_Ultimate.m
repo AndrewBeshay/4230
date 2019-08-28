@@ -9,7 +9,7 @@ while(~done)
         % indicate to move conveyor
         % and wait for a return (while loop) if not detected
         % continue
-        conveyorList = Main1_DetectBlocksOnConveyor();
+        conveyorList = Main1_DetectBlocksOnConveyor(app);
     end 
     
     if size(patternProps.Shape, 2) == 0
@@ -32,13 +32,13 @@ while(~done)
     % to transfer section
     [conveyorList] = Main5_RemoveFromConveyorList(conveyorList, conveyorList(1,:));
         
-    shapeProps = Main2_IdentifyBlock();
+    shapeProps = Main2_IdentifyBlock(app);
     if size(shapeProps.Centroid,1) == 0
         % nothing on the table, do nothing
         display("Table is empty");
         command = CreateCommand(2, "0 0 0 0");
         app.Commands = QueueCommand(app.Commands, command);
-        recv = SendCommand(app);
+        % recv = SendCommand(app);
 
         % send [0, 0, 0, 0]
         % wait for response
@@ -49,7 +49,7 @@ while(~done)
             display("The shape and colour is unrecognisable");
             command = CreateCommand(2, "0 -409 200 0");
             app.Commands = QueueCommand(app.Commands, command);
-            recv = SendCommand(app);
+            % recv = SendCommand(app);
             % move to bin, send [0, -409, 200, 0]
             % wait for response
         else 
@@ -58,7 +58,7 @@ while(~done)
                 % match found
                 command = CreateCommand(2, destCoordinate(1,:));
                 app.Commands = QueueCommand(app.Commands, command);
-                recv = SendCommand(app);
+                % recv = SendCommand(app);
                 % send destCoordinate(1,:)
                 % move pattern, wait for indication of completion
                 [patternProps] = Main6_RemoveFromPatternList(patternProps, destCoordinates(1,:));
@@ -66,7 +66,7 @@ while(~done)
                 % match not found
                 command = CreateCommand(2, "0 -409 200 0");
                 app.Commands = QueueCommand(app.Commands, command);
-                recv = SendCommand(app);
+                % recv = SendCommand(app);
                 % move to bin, send [0, -409, 200, 0]
                 % wait for response
             end
