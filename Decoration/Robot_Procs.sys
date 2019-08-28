@@ -1,0 +1,150 @@
+MODULE Robot_Procs(SYSMODULE,NOSTEPIN,READONLY)
+    PROC moveToCali()
+        MoveAbsJ jtCali,v400,fine,tool0;
+    ENDPROC
+
+    PROC moveToHome()
+        MoveAbsJ jtHome,v400,fine,tool0;
+    ENDPROC
+    
+    PROC moveToConv()
+        MoveAbsJ jtConv,v400,fine,tool0;
+    ENDPROC
+    
+    PROC goWait()
+        MoveJ waitTarget, v400, fine, tSCup;
+    ENDPROC
+    
+    PROC pick(robtarget t)
+        MoveJ Offs(t, 0, 0, 100), v200, fine, tSCup;
+        WaitTime \InPos, 0;
+        MoveL t, v100, fine, tSCup;
+        SuctionOn;
+        WaitTime 0.5;
+        GripLoad loChoc;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
+    ENDPROC
+    
+    PROC place(robtarget t)
+        MoveJ Offs(t, 0, 0, 100), v100, fine, tSCup;
+        WaitTime \InPos, 0;
+        MoveL t, v100, fine, tSCup;
+        SuctionOff;
+        WaitTime 0.5;
+        GripLoad load0;
+        MoveL Offs(t, 0, 0, 100), v100, fine, tSCup;
+    ENDPROC
+    
+    PROC Conv2Table(Block b)
+        target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        MoveJ conv2tableDodge, v400, z10, tSCup;
+        pick(target);
+        MoveJ conv2tableDodge, v100, z10, tSCup;
+        place(lookSpot);
+    ENDPROC
+    
+    PROC Table2Cake(Block b)
+        target:=[[b.p.x, b.p.y, b.p.z],[0,0,-1,0]*OrientZYX(b.r,0,0),[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+        pick(lookSpot);
+        place(target);
+    ENDPROC
+    
+    PROC goToTrash()
+        pick(lookSpot);
+        MoveJ trash, v100, fine, tSCup;
+        SuctionOff;
+        GripLoad load0;
+    ENDPROC
+    
+    !RECEIVING FROM MATLAB
+    FUNC Block getConvBlocks()
+        VAR Block newBlock;
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        posValid := StrToVal(mlBlocks, newBlock.p);
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        oriValid := StrToVal(mlBlocks, newBlock.r);   !always 0 in this part
+        
+!        HARDCODED VERSION
+!        posValid := StrToVal("[x,y,z]", newBlock.p);
+!        oriValid := StrToVal("0", newBlock.r);
+        
+        RETURN newBlock;
+    ENDFUNC
+    
+    FUNC Block getCakeBlock()
+        VAR Block newBlock;
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        posValid := StrToVal(mlBlocks, newBlock.p);
+        mlBlocks := ReadStr(mlStream \Delim:= " ");
+        oriValid := StrToVal(mlBlocks, newBlock.r);
+        
+!        HARDCODED VERSION
+!        posValid := StrToVal("[x,y,z]", newBlock.p);
+!        oriValid := StrToVal("r", newBlock.r);        
+
+        RETURN newBlock;
+    ENDFUNC
+    
+    PROC messageWait()
+        WHILE mlBlocks <> "rDeco" DO
+            mlBlocks := ReadStr(mlStream \Delim:= " ");
+        ENDWHILE
+    ENDPROC
+    
+    !SENDING TO MATLAB
+    PROC sendBlocks2MatLab()
+        Write mlSend, ""\Pos:=convBlock.p \NoNewLine;
+        Write mlSend, " "\Num:=convBlock.r \NoNewLine;
+        Write mlSend, " "\Pos:=cakeBlock.p \NoNewLine;
+        Write mlSend, " "\Num:=cakeBlock.r;
+    ENDPROC
+    
+    PROC sendError(num er)
+        IF er = 1 THEN
+            Write mlSend, "ERROR:Waiting_at_Conveyor";
+        ELSEIF er = 2 THEN
+            Write mlSend, "ERROR:Waiting_at_Cake";
+        ELSEIF er = 3 THEN
+            Write mlSend, "ERROR:Values_unreadable";
+        ELSEIF er = 4 THEN
+            Write mlSend, "ERROR:Unknown";
+        ENDIF
+    ENDPROC
+    
+    !VACUUM
+    PROC VacOn()
+        SetDO DO10_1, 1;
+        IF VacRun <> 1 THEN
+            VacRun := 1;
+            updateGUI := TRUE;
+        ENDIF
+        
+    ENDPROC
+    
+    PROC VacOff()
+        SetDO DO10_1, 0;
+        IF VacRun <> 0 THEN
+            VacRun := 0;
+            updateGUI := TRUE;
+        ENDIF
+    ENDPROC
+    
+    PROC SuctionOn()
+        VacOn;
+        SetDO DO10_2, 1;
+        IF SolRun <> 1 THEN
+            SolRun := 1;
+            updateGUI := TRUE;
+        ENDIF
+    ENDPROC
+    
+    PROC SuctionOff()
+        VacOff;
+        SetDO DO10_2, 0;
+        IF SolRun <> 0 THEN
+            SolRun := 0;
+            updateGUI := TRUE;
+        ENDIF
+    ENDPROC
+    
+ENDMODULE
