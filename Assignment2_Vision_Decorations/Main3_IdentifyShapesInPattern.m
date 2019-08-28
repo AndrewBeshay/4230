@@ -8,16 +8,19 @@ yellow = 1.4;
 CameraCalibration;
 
 %% Identify shapes and colour of the pattern
-table_Img = imread('Proper_Pics\MorePatterns\MorePattern8.jpg');
+table_Img = imread('Proper_Pics\PrintedPics\cake.jpg');
 table_Img = undistortImage(table_Img, cameraParams);
 table_Img = segmentSection(table_Img, 552, 1043, 288, 782);
-figure; imshow(table_Img);
+%figure; imshow(table_Img);
 
 table_ImgBW = ~im2bw(table_Img);
 table_ImgBW = segmentSection(table_ImgBW, 552, 1043, 288, 782);
 table_ImgBW = removeLettersAndNumbers(table_ImgBW);
 table_ImgBW = bwareaopen(table_ImgBW,100);
-figure; imshow(table_ImgBW);
+se = strel('square',10);
+table_ImgBW = bwmorph(table_ImgBW, 'thicken');
+table_ImgBW = bwmorph(table_ImgBW, 'majority');
+%figure; imshow(table_ImgBW);
 
 
 patternProps.Colour = [];
@@ -31,28 +34,34 @@ patternProps.Orientation = [];
 [myPatternRedBW,myPatternRed] = createPatternRedMask(table_Img);
 myPatternRedBW = imfill(myPatternRedBW,'holes');
 myPatternRedBW = bwareaopen(myPatternRedBW,100);
-figure; imshow(myPatternRed);
-figure; imshow(myPatternRedBW);
+
 
 % green
 % green's bit more sensitive 
 [myPatternGreenBW,myPatternGreen] = createPatternGreenMask3(table_Img);
 myPatternGreenBW = bwareaopen(myPatternGreenBW,200);
-figure; imshow(myPatternGreen);
- figure; imshow(myPatternGreenBW);
+
 
 % Blue
 table_Img = imsharpen(table_Img, 'Radius', 5, 'Amount', 1.5);
-[myPatternBlueBW,myPatternBlue] = createPatternBlueMask3(table_Img);
+[myPatternBlueBW,myPatternBlue] = createPatternBlueMask(table_Img);
 myPatternBlueBW = bwareaopen(myPatternBlueBW,200);
-figure; imshow(myPatternBlue);
-figure; imshow(myPatternBlueBW);
+
 
 % Yellow
-[myPatternYellowBW,myPatternYellow] = createPatternYellowMask3(table_Img);
+[myPatternYellowBW,myPatternYellow] = createPatternYellowMask(table_Img);
 myPatternYellowBW = bwareaopen(myPatternYellowBW,350);
+
+%{
+figure; imshow(myPatternRed);
+figure; imshow(myPatternRedBW);
+figure; imshow(myPatternGreen);
+figure; imshow(myPatternGreenBW);
+figure; imshow(myPatternBlue);
+figure; imshow(myPatternBlueBW);
 figure; imshow(myPatternYellow);
 figure; imshow(myPatternYellowBW);
+%}
 
 %% See if the colours exists in the pattern
 redExists = find(myPatternRedBW);
@@ -74,7 +83,7 @@ end
 
 % process green
 if length(greenExists) > 50 
-    [greenShape, greenCentroid, greenOrientation] = identifyAllGreenShapes3(myPatternGreenBW, table_ImgBW);
+    [greenShape, greenCentroid, greenOrientation] = identifyAllGreenShapes4(myPatternGreenBW, table_ImgBW);
     greenCentroidWorld = tablePxlToReal(greenCentroid(:,1), greenCentroid(:,2));
     
 else
@@ -87,7 +96,7 @@ end
 
 % process blue
 if length(blueExists) > 50 
-    [blueShape, blueCentroid, blueOrientation] = identifyAllBlueShapes(myPatternBlueBW, table_ImgBW);
+    [blueShape, blueCentroid, blueOrientation] = identifyAllBlueShapes2(myPatternBlueBW, table_ImgBW);
     blueCentroidWorld = tablePxlToReal(blueCentroid(:,1), blueCentroid(:,2));
     
 else
@@ -100,11 +109,7 @@ end
 
 % process yellow
 if length(yellowExists) > 50   
-    cicleAreaThreshold = 1150;
-    area2Threshold = 720;
-    imopenSquareDim = 20;
-    [yellowShape, yellowCentroid, yellowOrientation] = identifyAllYellowShapes(myPatternYellowBW, ...
-        table_ImgBW, cicleAreaThreshold, area2Threshold);
+    [yellowShape, yellowCentroid, yellowOrientation] = identifyAllYellowShapes2(myPatternYellowBW, table_ImgBW);
     yellowCentroidWorld = tablePxlToReal(yellowCentroid(:,1), yellowCentroid(:,2));
 else
     display("No yellow exists in the pattern");
@@ -132,7 +137,7 @@ patternProps = [ones(size(redShape, 1), 1)*red redShape redCentroid redOrientati
 %{
 %% For testing puspose, copy to the command prompt after you run this code
 patternProps = ans;
-table_Img = imread('Proper_Pics\MorePatterns\MorePattern6.jpg');
+table_Img = imread('Proper_Pics\PrintedPics\sup.jpg');
 figure; imshow(table_Img); hold on; 
 for n = 1:size(patternProps,1)
     plot(patternProps(n,3), patternProps(n,4), 'c*', 'MarkerSize', 8);

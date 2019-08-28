@@ -9,7 +9,7 @@ function conveyorList = Main1_DetectBlocksOnConveyor()
 
     [BW,maskedRGBImage] = createConveyorMask2(conveyorImg);
     BW = ~BW;
-    BW = segmentSection(BW, 560, 1155, 10, 586);
+    BW = segmentSection(BW, 560, 1130, 10, 586);
     BW = bwareaopen(BW,2000);             % remove white noise
     BW = bwmorph(BW, 'hbreak');
 
@@ -24,9 +24,9 @@ function conveyorList = Main1_DetectBlocksOnConveyor()
         % convert to real life
         conveyorList = conveyorPxlToReal(centroids(:,1), centroids(:,2));  
         conveyorList = [conveyorList zeros(size(conveyorList,1),1)];
-        figure();
-        imshow(BW); hold on;
-        plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
+        %figure();
+        %imshow(BW); hold on;
+        %plot(centroids(:,1), centroids(:,2), 'c*', 'MarkerSize', 10);
     else
         display("No blocks detected on the conveyor");
         conveyorList = [];

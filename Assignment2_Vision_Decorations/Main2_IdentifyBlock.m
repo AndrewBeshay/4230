@@ -41,17 +41,17 @@ recognise = 0;
 CameraCalibration;
 
 % Undistort and segment
-transfer_Img = imread('Proper_Pics\MorePatterns\MorePattern11.jpg');
+transfer_Img = imread('Proper_Pics\Shapes\blueFlower.jpg');
 transfer_Img = undistortImage(transfer_Img, cameraParams);
 transfer_Img = segmentSection(transfer_Img, 1238, size(transfer_Img,2), 290, 783);
-figure; imshow(transfer_Img);
+%figure; imshow(transfer_Img);
 
 % Get black and white version of the image
 transfer_ImgBW = im2bw(transfer_Img);
 transfer_ImgBW = ~transfer_ImgBW;
 transfer_ImgBW = segmentSection(transfer_ImgBW, 1238, size(transfer_Img,2), 290, 783);
 transfer_ImgBW = bwareaopen(transfer_ImgBW,400); 
-figure; imshow(transfer_ImgBW); 
+%figure; imshow(transfer_ImgBW); 
 %hold on;
 
 % Colour masking
