@@ -60,7 +60,7 @@ function inkFinal(app)
     
     outStr = "";
     inStr = "";
-    outStr = "ML 1 InkHome";
+    outStr = "InkHome";
     command = CreateCommand(2, "InkHome");
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
@@ -68,17 +68,31 @@ function inkFinal(app)
     %Send to Robot
 
     for charIdx=1:1:numChars
-
+        inkFlowOld = 0;
         for rowIdx = 1:1:size(outMtx,1)
-            outStr = sprintf("X%3.3fY%3.3fZ%3.3fV%1iI%1i",...
+            inkFlow = outMtx(rowIdx,5,charIdx);
+            if inkFlow ~= inkFlowOld && inkFlow == 1
+                %Turn ink on
+                outStr = "Ink1";
+            elseif inkFlow ~= inkFlowOld && inkFlow == 0
+                %Turn ink off
+                outStr = "Ink0";
+            end
+            
+            command = CreateCommand(2, outStr);
+            app.Commands = QueueCommand(app.Commands, command);
+            recv = SendCommand(app);
+            
+            
+            outStr = sprintf("X%3.3fY%3.3fZ%3.3fV%1i",...
                 outMtx(rowIdx,1,charIdx),outMtx(rowIdx,2,charIdx),outMtx(rowIdx,3,charIdx),...
-                outMtx(rowIdx,4,charIdx),outMtx(rowIdx,5,charIdx));
+                outMtx(rowIdx,4,charIdx));
 %             command = CreateCommand(2, outStr);
 %             app.Commands = QueueCommand(app.Commands, command);
 %             recv = SendCommand(app);
             if(sum(outMtx(rowIdx,:,charIdx)) == 0)
                 %String out to turn off ink and return to ink printing home
-                outStr = "ML 1 InkHome";
+                outStr = "InkHome";
 %                 command = CreateCommand(2, "InkHome");
 %                 app.Commands = QueueCommand(app.Commands, command);
 %                 recv = SendCommand(app);
@@ -96,14 +110,14 @@ function inkFinal(app)
            end
         end
 
-        outStr = "ML 1 InkHome";
+        outStr = "InkHome";
         command = CreateCommand(2, "InkHome");
         app.Commands = QueueCommand(app.Commands, command);
         recv = SendCommand(app);
         %Send to Robot
     end
 
-    outStr = "ML 1 Finish";
+    outStr = "Finish";
     command = CreateCommand(2, "Finish");
     app.Commands = QueueCommand(app.Commands, command);
     recv = SendCommand(app);
