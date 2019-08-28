@@ -35,6 +35,9 @@ function Main_Ultimate(app)
 
         command = CreateCommand(2, conveyorList(1,:));
         app.Commands = QueueCommand(app.Commands, command);
+        while app.recieved ~= "1"
+            continue;
+        end %%%%%%%%%
         % recv = SendCommand(app);
         
         % move block from conveyor to transfer section of the table
@@ -47,8 +50,11 @@ function Main_Ultimate(app)
             % nothing on the table, do nothing
             DISP("Table is empty");
             command = CreateCommand(2, "cake [0,0,0] 0");
-
             app.Commands = QueueCommand(app.Commands, command);
+
+            while app.recieved ~= "1"
+                continue;
+            end
             % recv = SendCommand(app);
 
             % send [0, 0, 0, 0]
@@ -60,6 +66,10 @@ function Main_Ultimate(app)
                 DISP("The shape and colour is unrecognisable");
                 command = CreateCommand(2, "cake [0,-409,200] 0");
                 app.Commands = QueueCommand(app.Commands, command);
+
+                while app.recieved ~= "1"
+                    continue;
+                end
                 % recv = SendCommand(app);
                 % move to bin, send [0, -409, 200, 0]
                 % wait for response
@@ -72,6 +82,10 @@ function Main_Ultimate(app)
                     outStr = strcat("cake [", num2str(temp(1)), ',', num2str(temp(2)),',', num2str(temp(3)), "] ", num2str(temp(4)));
                     command = CreateCommand(2, outStr);
                     app.Commands = QueueCommand(app.Commands, command);
+
+                    while app.recieved ~= "1"
+                        continue;
+                    end
                     % recv = SendCommand(app);
                     % send destCoordinate(1,:)
                     % move pattern, wait for indication of completion
@@ -80,6 +94,10 @@ function Main_Ultimate(app)
                     % match not found
                     command = CreateCommand(2, "cake [0,-409,200] 0");
                     app.Commands = QueueCommand(app.Commands, command);
+
+                    while app.recieved ~= "1"
+                        continue;
+                    end
                     % recv = SendCommand(app);
                     % move to bin, send [0, -409, 200, 0]
                     % wait for response
