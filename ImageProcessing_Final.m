@@ -1,123 +1,107 @@
 function CharsOut = ImageProcessing_Final(app)
 
     app.WAITINGLabel.Text = "INK PRINTING";
-%% Load in the Picture 
-% I = imread("ImageFour.jpg");
-    I = imread('testImage.jpg');
-%% Main function Part
-%function to filter out the boxes 
-[BWoverlay,S] = BoxFilter(I);
-[Pic] = convertBinImage2RGB(BWoverlay);
-I = rgb2gray(Pic);
-[I] = DetectText(I,Pic);
-%-------Final Filtering of the image to get rid of everything except the text---------------- 
-I = ~I;
-[BWoverlay,S2] = BoxFilter(I);
+    %% Load in the Picture 
 
-%Filtered Image all the Way 
-% figure(25);
-% imshow(BWoverlay);
+    if app.ConType == 0
+        I = app.SnapTab;
+    else
+        I = imread('galaxy.jpg');
+    end
+    
+    %-----------------Initial function to filter out the boxes----------------
+    [BWoverlay,S] = BoxFilter(I);
+    %------------------Finding the text Area----------------------------------
+    %% 
+    [Pic] = convertBinImage2RGB(BWoverlay);
+    I = rgb2gray(Pic);
+    [I] = DetectText(I,Pic);
+    %% 
+    %-------Final Filtering of the image to get rid of everything except the text---------------- 
+    I = ~I;
+    [BWoverlay,S2] = BoxFilter(I);
+    %--------------------Show Final Filtered Image---------------------------- 
+    % figure(25);
+    % imshow(BWoverlay);
+    %% 
+    %---------------------Detecting the Bold Letters--------------------------
+    [mserReg,mserStat] = DetectBold(BWoverlay);
+    %------------------Function to Smoothen out the Image---------------------
+    binaryImage = SmoothImage(BWoverlay);
+    %---------------Finding the Path of the robot----------------------------
+    %% 
 
+    boundaries = FindPath(binaryImage);
+    BoundaryFilt = [];
+    for i = 1:size(boundaries,1)
+        if (size(boundaries{i},1) > 144)
+        BoundaryFilt = [BoundaryFilt;boundaries(i)]; 
+        end   
+    end
+    %% 
 
-%Detecting the Bold Letters
-[mserReg,mserStat] = DetectBold(BWoverlay);
-
-%Function to Smoothen out the Image
-binaryImage = SmoothImage(BWoverlay);
-
-%---------------Finding the Path of the robot---------------------------
-
-%Using the BWBoundaries Method
-BW3 = bwmorph(binaryImage,'thin',inf);
-BW3 = bwmorph(BW3,'clean');
-BW3 = bwmorph(BW3,'spur',4);
-% se = strel('line',5,0);
-% BW3 = imdilate(BW3,se);
-boundaries = bwboundaries(BW3);
-b = boundaries{1};
-%b = b(1:floor(end/2), :);
-BoundaryFilt = [];
-for i = 1:size(boundaries,1)
-    if (size(boundaries{i},1) > 149)
-       BoundaryFilt = [BoundaryFilt;boundaries(i)]; 
-    end   
-end
-%% Plotting the Boundary stuff
-
-%Creating the Structs
-txtStructs = CreateStructs(BoundaryFilt,mserReg,mserStat);
-
-%% Plotting the function
-
-b2 = txtStructs(8).points;
-x = b2(:,2);
-y = b2(:,1);
-% figure(67);
-% imshow(binaryImage);
-% hold on;
-% plot(x,y,'r-');
-% hold off;
-
-%% Return
-CharsOut = txtStructs;
+    %---------------Creating the Structs--------------------------------------
+    txtStructs = CreateStructs(BoundaryFilt,mserReg,mserStat);
+    %---------------Plotting the path----------------------------------------- 
+    b2 = txtStructs(1).points;
+    x = b2(:,2);
+    y = b2(:,1);
+    % figure(67);
+    % imshow(binaryImage);
+    % hold on;
+    % plot(x,y,'r-');
+    % hold off;
+    CharsOut = txtStructs;
 end
 %% Putting all the info into structs to be sent to the robot 
-
-
 function txtStruct = CreateStructs(BoundaryFilt,mserReg,mserStat)
-for i = 1:size(BoundaryFilt,1);
-    temp = BoundaryFilt{i};
-    %Gets rid of the duplicates 
-    temp = unique(temp, 'row', 'stable');
-    %Putting the Path into the struct
-    txtStruct(i).points = temp;
-    
-    %Detect if character in the Bold Region
-    
-    for j = 1:size(mserStat,1)
-        %CurrBox = mserStat(j).BoundingBox;
-         CurrBox = mserReg(j).PixelList;
-        Cond = (find(temp(5,1) == CurrBox(:,2)));
-         Cond2 =(find(temp(5,2) == CurrBox(:,1)));
-%         Cond = (find(temp(1,1) > CurrBox(2) && temp(1,1) < CurrBox(2) +CurrBox(4)));
-%         Cond2 = (find(temp(1,2) > CurrBox(1) && temp(1,2) < CurrBox(1) +CurrBox(3)));
+    for i = 1:size(BoundaryFilt,1);
+        temp = BoundaryFilt{i};
+        %Gets rid of the duplicates 
+        temp = unique(temp, 'row', 'stable');
+        %Putting the Path into the struct
+        txtStruct(i).points = temp;
         
-      if(~isempty(Cond) && ~isempty(Cond2))
-            txtStruct(i).Bold = 1;
-            break;       
-      else  
-            txtStruct(i).Bold = 0;    
-      end     
+        %Detect if character in the Bold Region
+        
+        for j = 1:size(mserStat,1)
+            %CurrBox = mserStat(j).BoundingBox;
+            CurrBox = mserReg(j).PixelList;
+            Cond = (find(temp(45,2) == CurrBox(:,1)));
+            Cond2 =(find(temp(45,1) == CurrBox(:,2)));
+    %         Cond = (find(temp(1,1) > CurrBox(2) && temp(1,1) < CurrBox(2) +CurrBox(4)));
+    %         Cond2 = (find(temp(1,2) > CurrBox(1) && temp(1,2) < CurrBox(1) +CurrBox(3)));
+            
+            if(~isempty(Cond) && ~isempty(Cond2))
+                txtStruct(i).Bold = 1;
+                break;       
+            else  
+                txtStruct(i).Bold = 0;    
+            end     
+        end 
+            
     end 
-        
-end 
-
 end 
 
 %% Function to filter Boxes
 
 function [BWoverlay,S] = BoxFilter(I)
-BW = im2bw(I);
-s = regionprops(~BW,'Area','BoundingBox','Centroid');
-S = s;
-corners = [];
-   for i = 1:numel(s)
-  %a = find (s(i).Area < 6500 && s(i).Area > 5000 && abs(s(i).BoundingBox(3)-s(i).BoundingBox(4)) < 5);
-  a = find (s(i).Area < 70 && s(i).Area > 0 | (s(i).Area < 3000)) %&& s(i).Area > 0 && abs(s(i).BoundingBox(3)-s(i).BoundingBox(4)) < 50));
-   if (a == 1)
-        corners = [corners;s(i).BoundingBox];
-    end
-   end 
+    BW = im2bw(I);
+    s = regionprops(~BW,'Area','BoundingBox','Centroid', 'MajorAxisLength');
+    S = s;
+    corners = [];
+    for i = 1:numel(s)
+        a = find ((s(i).MajorAxisLength < 72))  %%(s(i).Area < 3000));s(i).Area < 70 && s(i).Area > 0
+        if (a == 1)
+            corners = [corners;s(i).BoundingBox];
+        end
+    end 
     
-BWoverlay =  imcomplement(BW);
-   
-   for i = 1:size(corners,1)
-
-    BWoverlay(corners(i,2):(corners(i,2) + corners(i,4)),...
+    BWoverlay =  imcomplement(BW);
+    for i = 1:size(corners,1)
+        BWoverlay(corners(i,2):(corners(i,2) + corners(i,4)),...
         corners(i,1):(corners(i,1) + corners(i,3)))=0;
-   end    
-% figure(20)
-% imshow(BWoverlay);
+    end    
 end 
 
 %% Detecting the Text
@@ -148,8 +132,8 @@ filterIdx = filterIdx | [mserStats.EulerNumber] < -4;
 mserStats(filterIdx) = [];
 mserRegions(filterIdx) = [];
 
-% Show remaining regions
-% figure(22)
+%Show remaining regions
+% figure(52)
 % imshow(I)
 % hold on
 % plot(mserRegions, 'showPixelList', true,'showEllipses',false)
@@ -167,7 +151,7 @@ strokeWidthImage(~skeletonImage) = 0;
 strokeWidthValues = distanceImage(skeletonImage);   
 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
 % Threshold the stroke width variation metric
-strokeWidthThreshold = 0.3;
+strokeWidthThreshold = 0.35;
 strokeWidthFilterIdx = strokeWidthMetric > strokeWidthThreshold;
 % Process the remaining regions
 for j = 1:numel(mserStats)
@@ -190,8 +174,8 @@ end
 mserRegions(strokeWidthFilterIdx) = [];
 mserStats(strokeWidthFilterIdx) = [];
 
-% % Show remaining regions
-% figure(25)
+% Show remaining regions
+% figure(35)
 % imshow(I)
 % hold on
 % plot(mserRegions, 'showPixelList', true,'showEllipses',false)
@@ -291,8 +275,8 @@ aspectRatio = w./h;
 % may need to be tuned for other images.
 filterIdx = aspectRatio' > 4; 
 filterIdx = filterIdx | [mserStats2.Eccentricity] > .95 ;
-filterIdx = filterIdx | [mserStats2.Solidity] < 0.55 | [mserStats2.Solidity] > 0.85 ;
-filterIdx = filterIdx | [mserStats2.Extent] < 0.2 | [mserStats2.Extent] > 0.9;
+filterIdx = filterIdx | [mserStats2.Solidity] < 0.52 | [mserStats2.Solidity] > 0.85 ;
+filterIdx = filterIdx | [mserStats2.Extent] < 0.2 | [mserStats2.Extent] > 0.8;
 filterIdx = filterIdx | [mserStats2.EulerNumber] < -4;
 
 % Remove regions
@@ -304,20 +288,20 @@ mserReg = mserRegions2;
 mserStat = mserStats2;
 
 %Show remaining regions
-% figure(32)
-% imshow(BWoverlay)
-% hold on
-% plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
-% title('After Removing Non-Text Regions Based On Geometric Properties')
-% hold off
+figure(32)
+imshow(BWoverlay)
+hold on
+plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
+%title('After Removing Non-Text Regions Based On Geometric Properties')
+hold off
 
 % Show remaining regions
-% figure(45)
-% imshow(BWoverlay)
-% hold on
-% plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
-% title('After Removing Non-Text Regions Based On Stroke Width Variation')
-% hold off
+figure(45)
+imshow(BWoverlay)
+hold on
+plot(mserRegions2, 'showPixelList', true,'showEllipses',false)
+%title('After Removing Non-Text Regions Based On Stroke Width Variation')
+hold off
 
 
 
@@ -332,7 +316,20 @@ binaryImage = blurredImage > 0.5;
 
 
 end 
+%% Function that creates the boundaries used for Path
 
+function boundaries = FindPath(binaryImage);
+%Using the BWBoundaries Method
+BW3 = bwmorph(binaryImage,'thin',inf);
+BW3 = bwmorph(BW3,'clean');
+BW3 = bwmorph(BW3,'spur',4);
+
+figure(100);
+imshow(BW3);
+% se = strel('line',5,0);
+% BW3 = imdilate(BW3,se);
+boundaries = bwboundaries(BW3,'noholes');
+end 
 %% Function to convert Binary to RGB Image
 
 function [RGB_Image] = convertBinImage2RGB(BinImage)
