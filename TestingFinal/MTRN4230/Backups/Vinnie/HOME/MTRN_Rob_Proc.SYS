@@ -1,0 +1,48 @@
+MODULE MTRN_Rob_Proc (SYSMODULE, NOSTEPIN, READONLY)
+
+ ! MTRN ROBOTICS COMMON PROCEDURES
+ !********************************
+ !
+ ! For the ABB IRB120 Robot in the Mechatronics Willis Annexe Lab for the MTRN4230 Robotics Course
+ !
+ !
+ !
+ ! Data Change History
+ !
+ ! Date		Name		Comments
+ ! --------------------------------------------------------------------------------------------------------------------
+ ! 14032016	Steve Kuhle	Added a Move to Home Position Procedure so Robot arm is out of the way of the cameras
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ !
+ 
+ PROC MoveToCalibPos()
+ !***************************************************************************************
+ !
+ ! Move to Calibrate Position
+ !
+ !***************************************************************************************
+
+ MoveAbsJ jtCalibPos,v400,fine,tool0;
+
+ ENDPROC
+
+ PROC MoveToHomePos()
+ !***************************************************************************************
+ !
+ ! Move to Home Position
+ !
+ !***************************************************************************************
+
+ MoveAbsJ jtHomePos,v400,fine,tool0;
+
+ ENDPROC
+
+ENDMODULE

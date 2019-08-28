@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--****************************************************
+* uas_grants.xml  - User Authorization Grants List
+*
+* $Revision: 1.1 $
+*
+* DESCRIPTION:
+*   This file contains the XML values for the User Authorization
+*   System (UAS) Grants List.  This file is used by the controller and by
+*   the tools when adding grants to a group for the controller.
+*   The Grants list contains the grants for the controller including past
+*	grants and possible versions and revisions.
+*
+* Copyright (c) ABB 2004 All rights reserved
+*-->
+<UAS_ApplicationGrants xmlns="urn:abb-robotics-uas-grants">
+	<ApplicationGrants resourceID="PM_TXT_TITLE">
+		<ApplicationGrant key="PM_SEL_PARTS" valueType="typeBoolean" resourceID="PM_TXT_SEL_PARTS" helpID="PM_HLP_SEL_PARTS">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+		<ApplicationGrant key="PM_EDIT_PARTS" valueType="typeBoolean" resourceID="PM_TXT_EDIT_PARTS" helpID="PM_HLP_EDIT_PARTS">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+		<ApplicationGrant key="PM_EDIT_MENUS" valueType="typeBoolean" resourceID="PM_TXT_EDIT_MENUS" helpID="PM_HLP_EDIT_MENUS">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+		<ApplicationGrant key="PM_DBG_PARTS" valueType="typeBoolean" resourceID="PM_TXT_DBG_PARTS" helpID="PM_HLP_DBG_PARTS">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+		<ApplicationGrant key="PM_SEAMDISP" valueType="typeBoolean" resourceID="PM_TXT_SEAMDISP" helpID="PM_HLP_SEAMDISP">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+		<ApplicationGrant key="PM_RUNMENUUSERLEV" valueType="typeInteger" resourceID="PM_TXT_RUNMENUUSERLEV" helpID="PM_HLP_RUNMENUUSERLEV" minValue="0" maxValue="255">
+			<StartVersion>
+				<Major>5</Major>
+				<Minor>10</Minor>
+				<Revision>0</Revision>
+			</StartVersion>
+		</ApplicationGrant>
+	</ApplicationGrants>	
+</UAS_ApplicationGrants>

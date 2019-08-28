@@ -1,0 +1,67 @@
+#
+# Generated backup file, do not edit.
+#
+# Originally at: C:/Users/Student/AppData/Local/Temp/62a5d036
+# 2019-06-03  10:19:36
+#
+>>SYSTEM_ID:
+120-500903
+
+>>PRODUCTS_ID:
+RobotWare Version: 5.15.9175.16
+
+  RW Control module key
+  RobotWare OS and English
+  748-1 DeviceNet Lean
+  602-1 Advanced Shape Tuning
+  608-1 World Zones
+  610-1 Independent Axis
+  611-1 Path Recovery
+  612-1 Path Offset
+  885-1 SoftMove
+  613-1 Collision Detection
+  614-1 FTP and NFS client
+  616-1 PC Interface
+  617-1 FlexPendant Interface
+  623-1 Multitasking
+  628-1 Sensor Interface
+  812-1 Production Manager
+  RW Drive module 1 key
+  ABB standard manipulator
+  IRB 120
+  120-0.58/3
+  Drive System 09 120/140/1400/1600/260 Compact
+  1-Phase Power Supply
+  No additional drive
+
+>>ROBOT_TYPE:
+120-0.58/3
+
+>>HOME:
+All public files and directories
+
+>>SYSPAR:
+SYS.cfg
+PROC.cfg
+EIO.cfg
+SIO.cfg
+MOC.cfg
+MMC.cfg
+
+
+>>TASK1: (T_ROB1,,)
+SYSMOD\user.sys @ user.sys
+SYSMOD\GAP_USER.sys @ gap_user.sys
+PROGMOD\MTRN4230_IO_Sample.mod @ mtrn4230_io_sample.mod
+PROGMOD\MTRN4230_Move_Sample.mod @ mtrn4230_move_sample.mod
+SYSMOD\MTRN_Rob_Proc.sys @ mtrn_rob_proc.sys
+SYSMOD\MTRN_Rob_Data.sys @ mtrn_rob_data.sys
+
+>>TASK2: (T_COM1,,)
+SYSMOD\user.sys @ user.sys
+PROGMOD\MTRN4230_Server_Sample.mod @ mtrn4230_server_sample.mod
+SYSMOD\MTRN_Rob_Proc.sys @ mtrn_rob_proc.sys
+SYSMOD\MTRN_Rob_Data.sys @ mtrn_rob_data.sys
+
+
+>>EOF:

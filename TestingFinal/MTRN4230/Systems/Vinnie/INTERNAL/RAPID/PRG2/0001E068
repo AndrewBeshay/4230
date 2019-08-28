@@ -1,0 +1,12 @@
+MODULE MTRN4230_Ink_Constants(SYSMODULE,NOSTEPIN,READONLY)
+    
+    
+    CONST jointtarget jtInkHomePos := [[0,0,0,0,90,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+ 
+    
+    PROC MoveToInkHome()
+        MoveAbsJ jtInkHomePos, v400, fine, tool0;
+    ENDPROC
+ 
+    
+ENDMODULE

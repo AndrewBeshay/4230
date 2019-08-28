@@ -1,0 +1,44 @@
+<?xml version = "1.0" encoding="utf-8" ?>
+<elogtext_registry xmlns="urn:abb-robotics-registry-elog-text">
+<entry domain_no="1" min="2" max="176" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/opr_elogtext_1.xml"/>
+<entry domain_no="1" min="177" max="1228" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/opr_elogtext_2.xml"/>
+<entry domain_no="1" min="1229" max="2514" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/opr_elogtext_3.xml"/>
+<entry domain_no="2" min="10" max="150" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/sys_elogtext_1.xml"/>
+<entry domain_no="2" min="153" max="248" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/sys_elogtext_2.xml"/>
+<entry domain_no="2" min="249" max="366" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/sys_elogtext_3.xml"/>
+<entry domain_no="2" min="367" max="492" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/sys_elogtext_4.xml"/>
+<entry domain_no="2" min="493" max="636" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/sys_elogtext_5.xml"/>
+<entry domain_no="3" min="1810" max="4201" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/hw_elogtext_1.xml"/>
+<entry domain_no="3" min="4202" max="7081" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/hw_elogtext_2.xml"/>
+<entry domain_no="3" min="7082" max="7249" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/hw_elogtext_3.xml"/>
+<entry domain_no="3" min="7250" max="9419" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/hw_elogtext_4.xml"/>
+<entry domain_no="3" min="9420" max="9531" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/hw_elogtext_5.xml"/>
+<entry domain_no="4" min="1" max="106" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_1.xml"/>
+<entry domain_no="4" min="107" max="257" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_2.xml"/>
+<entry domain_no="4" min="258" max="572" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_3.xml"/>
+<entry domain_no="4" min="573" max="712" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_4.xml"/>
+<entry domain_no="4" min="713" max="1010" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_5.xml"/>
+<entry domain_no="4" min="1011" max="1476" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_6.xml"/>
+<entry domain_no="4" min="1477" max="1583" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_7.xml"/>
+<entry domain_no="4" min="1584" max="1701" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_8.xml"/>
+<entry domain_no="4" min="1702" max="1888" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/arl_elogtext_9.xml"/>
+<entry domain_no="5" min="21" max="183" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/moc_elogtext_1.xml"/>
+<entry domain_no="5" min="184" max="279" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/moc_elogtext_2.xml"/>
+<entry domain_no="5" min="280" max="366" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/moc_elogtext_3.xml"/>
+<entry domain_no="5" min="367" max="444" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/moc_elogtext_4.xml"/>
+<entry domain_no="7" min="1001" max="1232" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/io_elogtext_1.xml"/>
+<entry domain_no="7" min="1241" max="1358" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/io_elogtext_2.xml"/>
+<entry domain_no="7" min="1359" max="1453" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/io_elogtext_3.xml"/>
+<entry domain_no="7" min="1454" max="1553" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/io_elogtext_4.xml"/>
+<entry domain_no="8" min="1" max="3" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/usr_elogtext_1.xml"/>
+<entry domain_no="10" min="0" max="0" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/int_elogtext_1.xml"/>
+<entry domain_no="11" min="4800" max="4814" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/miscproc_elogtext_1.xml"/>
+<entry domain_no="12" min="1" max="12" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/cfg_elogtext_1.xml"/>
+<entry domain_no="15" min="330" max="330" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/rapid_elogtext_1.xml"/>
+<titles prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/domain_elogtitles.xml"/>
+<domains prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/language/install/../" postpath="/Controller/Elog/elog_domains.xml"/>
+<entry domain_no="11" min="0" max="199" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/options/cap/language/" postpath="/cap_elogtext.xml"/>
+<titles prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/options/cap/language/" postpath="/cap_elogtitles.xml"/>
+<entry domain_no="11" min="1400" max="1499" prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/options/gap/GapCore/language/" postpath="/gap_elogtext.xml"/>
+<titles prepath="C:/PROGRAM FILES (X86)/ABB INDUSTRIAL IT/ROBOTICS IT/MEDIAPOOL/ROBOTWARE_5.15.9175/options/gap/GapCore/language/" postpath="/gap_elogtitles.xml"/>
+</elogtext_registry>
